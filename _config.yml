@@ -3,8 +3,8 @@ title: davmoren
 description: >-
   Artículos sobre inteligencia artificial,
   matemáticas y programación.
-baseurl: "" # Subcarpeta del proyecto (ejemplo: /mi-portafolio)
-url: "" # URL base (ejemplo: https://tuusuario.github.io)
+baseurl: "/davmoren.github.io" # Subcarpeta del proyecto (ejemplo: /mi-portafolio)
+url: "https://z43l.github.io/davmoren.github.io/" # URL base (ejemplo: https://tuusuario.github.io)
 
 # Información del autor
 author:

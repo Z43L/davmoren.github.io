@@ -9,6 +9,10 @@
     let highlighterMenu = null;
     let currentSelection = null;
     let longPressTimer = null;
+    let activeColor = null;
+    let removalMode = false;
+    const colorButtons = new Map();
+    let removeButtonRef = null;
     const LONG_PRESS_DURATION = 500; // ms
 
     function isMobileView() {
@@ -25,15 +29,49 @@
         e.currentTarget.classList.remove('touch-active');
     }
 
+    function updateButtonStates() {
+        colorButtons.forEach((button, color) => {
+            const isSelected = !removalMode && activeColor === color;
+            button.classList.toggle('selected', isSelected);
+        });
+
+        if (removeButtonRef) {
+            removeButtonRef.classList.toggle('selected', removalMode);
+        }
+    }
+
+    function setActiveColor(color) {
+        activeColor = color;
+        removalMode = false;
+        updateButtonStates();
+    }
+
+    function enableRemovalMode() {
+        if (removalMode) {
+            removalMode = false;
+        } else {
+            activeColor = null;
+            removalMode = true;
+        }
+        updateButtonStates();
+    }
+
+    function ensureMobileMenuVisible() {
+        if (!highlighterMenu) return;
+        highlighterMenu.classList.add('mobile');
+        highlighterMenu.classList.add('active');
+        highlighterMenu.style.left = '';
+        highlighterMenu.style.top = '';
+        highlighterMenu.style.bottom = '';
+        highlighterMenu.style.transform = '';
+        updateButtonStates();
+    }
+
     function positionHighlighterMenu(pos) {
         if (!highlighterMenu) return;
 
         if (isMobileView()) {
-            highlighterMenu.classList.add('mobile');
-            highlighterMenu.style.left = '';
-            highlighterMenu.style.top = '';
-            highlighterMenu.style.bottom = '';
-            highlighterMenu.style.transform = '';
+            ensureMobileMenuVisible();
         } else {
             highlighterMenu.classList.remove('mobile');
             highlighterMenu.style.bottom = '';
@@ -59,16 +97,25 @@
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                highlightSelection(color);
+                if (currentSelection) {
+                    highlightSelection(color);
+                } else if (isMobileView()) {
+                    setActiveColor(color);
+                }
             });
             button.addEventListener('touchstart', handleButtonTouchStart, { passive: true });
             button.addEventListener('touchend', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 handleButtonTouchEnd(e);
-                highlightSelection(color);
+                if (currentSelection) {
+                    highlightSelection(color);
+                } else if (isMobileView()) {
+                    setActiveColor(color);
+                }
             });
             button.addEventListener('touchcancel', handleButtonTouchEnd);
+            colorButtons.set(color, button);
             menu.appendChild(button);
         });
 
@@ -80,16 +127,25 @@
         removeButton.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            removeHighlight();
+            if (currentSelection) {
+                removeHighlight();
+            } else if (isMobileView()) {
+                enableRemovalMode();
+            }
         });
         removeButton.addEventListener('touchstart', handleButtonTouchStart, { passive: true });
         removeButton.addEventListener('touchend', (e) => {
             e.preventDefault();
             e.stopPropagation();
             handleButtonTouchEnd(e);
-            removeHighlight();
+            if (currentSelection) {
+                removeHighlight();
+            } else if (isMobileView()) {
+                enableRemovalMode();
+            }
         });
         removeButton.addEventListener('touchcancel', handleButtonTouchEnd);
+        removeButtonRef = removeButton;
         menu.appendChild(removeButton);
 
         document.body.appendChild(menu);
@@ -144,7 +200,14 @@
 
     // Ocultar el menú
     function hideHighlighterMenu() {
-        if (highlighterMenu) {
+        if (!highlighterMenu) {
+            currentSelection = null;
+            return;
+        }
+
+        if (isMobileView()) {
+            ensureMobileMenuVisible();
+        } else {
             highlighterMenu.classList.remove('active');
             highlighterMenu.classList.remove('mobile');
             highlighterMenu.style.bottom = '';
@@ -152,94 +215,289 @@
             highlighterMenu.style.left = '';
             highlighterMenu.style.transform = '';
         }
+
         currentSelection = null;
     }
 
-    // Aplicar resaltado
-    function highlightSelection(color) {
-        console.log('Applying highlight with color:', color);
+    function isRangeInPostContent(range) {
+        if (!range) return false;
 
-        if (!currentSelection) {
-            console.warn('No selection available');
-            return;
+        const container = range.commonAncestorContainer;
+        const element = container.nodeType === Node.TEXT_NODE
+            ? container.parentElement
+            : container;
+
+        return !!(element && element.closest('.post-content'));
+    }
+
+    function rangeTouchesExistingHighlight(range) {
+        const startElement = range.startContainer.nodeType === Node.TEXT_NODE
+            ? range.startContainer.parentElement
+            : range.startContainer;
+        const endElement = range.endContainer.nodeType === Node.TEXT_NODE
+            ? range.endContainer.parentElement
+            : range.endContainer;
+
+        if ((startElement && startElement.closest('mark.highlight')) ||
+            (endElement && endElement.closest('mark.highlight'))) {
+            return true;
         }
 
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(currentSelection.range);
+        try {
+            const fragment = range.cloneContents();
+            if (fragment.querySelector && fragment.querySelector('mark.highlight')) {
+                return true;
+            }
+        } catch (err) {
+            // Ignorar errores de cloneContents en rangos complejos
+        }
 
-        const range = selection.getRangeAt(0);
+        return false;
+    }
+
+    function highlightRange(range, color) {
+        if (!range || range.collapsed) {
+            console.warn('Range not available to highlight');
+            return false;
+        }
+
+        if (!color) {
+            console.warn('No color selected for highlight');
+            return false;
+        }
+
+        if (!isRangeInPostContent(range)) {
+            console.warn('Range is outside post content');
+            return false;
+        }
+
+        if (rangeTouchesExistingHighlight(range)) {
+            console.warn('Range intersects existing highlight');
+            return false;
+        }
+
         const mark = document.createElement('mark');
         mark.className = `highlight highlight-${color}`;
         mark.setAttribute('data-highlight-id', generateId());
         mark.setAttribute('data-color', color);
 
-        console.log('Created mark with classes:', mark.className);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
 
         try {
             range.surroundContents(mark);
             console.log('Highlight applied successfully');
-            saveHighlights();
-            hideHighlighterMenu();
         } catch (e) {
-            // Si falla (por ejemplo, selección parcial de nodos), usar execCommand
             console.warn('Fallback to alternative highlight method', e);
-            // Alternativa: insertar el contenido manualmente
             const fragment = range.extractContents();
             mark.appendChild(fragment);
             range.insertNode(mark);
             console.log('Highlight applied with fallback method');
-            saveHighlights();
-            hideHighlighterMenu();
         }
 
         selection.removeAllRanges();
+        saveHighlights();
+        return true;
+    }
+
+    // Aplicar resaltado a selección manual
+    function highlightSelection(color) {
+        if (!currentSelection) {
+            console.warn('No selection available');
+            return;
+        }
+
+        const range = currentSelection.range.cloneRange();
+        const applied = highlightRange(range, color);
+
+        if (applied && !isMobileView()) {
+            hideHighlighterMenu();
+        }
+
+        currentSelection = null;
+    }
+
+    function unwrapMark(mark) {
+        if (!mark || !mark.parentNode) {
+            return false;
+        }
+
+        const parent = mark.parentNode;
+        while (mark.firstChild) {
+            parent.insertBefore(mark.firstChild, mark);
+        }
+
+        parent.removeChild(mark);
+        parent.normalize();
+        return true;
     }
 
     // Remover resaltado
     function removeHighlight() {
-        console.log('Removing highlight');
-
         if (!currentSelection) {
             console.warn('No selection available for removal');
             return;
         }
 
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(currentSelection.range);
-
         const range = currentSelection.range;
-
-        // Encontrar el mark element más cercano
         let element = range.commonAncestorContainer;
-        if (element.nodeType === 3) element = element.parentElement;
+        if (element.nodeType === Node.TEXT_NODE) {
+            element = element.parentElement;
+        }
 
-        const mark = element.closest('mark.highlight');
+        const mark = element ? element.closest('mark.highlight') : null;
 
-        if (mark) {
-            console.log('Found mark to remove:', mark);
-            const parent = mark.parentNode;
-
-            // Mover todos los nodos hijos fuera del mark
-            while (mark.firstChild) {
-                parent.insertBefore(mark.firstChild, mark);
-            }
-
-            // Remover el mark vacío
-            parent.removeChild(mark);
-
-            // Normalizar el texto para limpiar nodos adyacentes
-            parent.normalize();
-
+        if (mark && unwrapMark(mark)) {
             console.log('Highlight removed successfully');
             saveHighlights();
         } else {
             console.warn('No highlight mark found to remove');
         }
 
-        hideHighlighterMenu();
+        const selection = window.getSelection();
         selection.removeAllRanges();
+
+        if (!isMobileView()) {
+            hideHighlighterMenu();
+        }
+
+        currentSelection = null;
+    }
+
+    function resolveTextPosition(node, offset) {
+        if (!node) return null;
+
+        if (node.nodeType === Node.TEXT_NODE) {
+            return {
+                node,
+                offset: Math.min(offset, node.textContent.length)
+            };
+        }
+
+        const childNodes = node.childNodes;
+        if (!childNodes || childNodes.length === 0) {
+            return null;
+        }
+
+        const targetIndex = Math.min(offset, childNodes.length - 1);
+        let target = childNodes[targetIndex];
+
+        while (target && target.nodeType !== Node.TEXT_NODE) {
+            target = target.firstChild || target.nextSibling;
+        }
+
+        if (!target || target.nodeType !== Node.TEXT_NODE) {
+            return null;
+        }
+
+        return {
+            node: target,
+            offset: Math.min(offset, target.textContent.length)
+        };
+    }
+
+    function expandRangeToWord(range) {
+        const textNode = range.startContainer;
+        if (!textNode || textNode.nodeType !== Node.TEXT_NODE) {
+            return null;
+        }
+
+        const text = textNode.textContent;
+        let start = range.startOffset;
+        let end = range.endOffset;
+
+        while (start > 0 && /\S/.test(text[start - 1])) start--;
+        while (end < text.length && /\S/.test(text[end])) end++;
+
+        if (start === end) {
+            return null;
+        }
+
+        const wordRange = document.createRange();
+        wordRange.setStart(textNode, start);
+        wordRange.setEnd(textNode, end);
+        return wordRange;
+    }
+
+    function getRangeFromPoint(x, y) {
+        let baseRange = null;
+
+        if (document.caretRangeFromPoint) {
+            baseRange = document.caretRangeFromPoint(x, y);
+        } else if (document.caretPositionFromPoint) {
+            const position = document.caretPositionFromPoint(x, y);
+            if (position) {
+                baseRange = document.createRange();
+                baseRange.setStart(position.offsetNode, position.offset);
+                baseRange.setEnd(position.offsetNode, position.offset);
+            }
+        }
+
+        if (!baseRange || !baseRange.startContainer) {
+            return null;
+        }
+
+        if (baseRange.startContainer.nodeType !== Node.TEXT_NODE) {
+            const resolved = resolveTextPosition(baseRange.startContainer, baseRange.startOffset);
+            if (!resolved) return null;
+            baseRange.setStart(resolved.node, resolved.offset);
+            baseRange.setEnd(resolved.node, resolved.offset);
+        }
+
+        return expandRangeToWord(baseRange);
+    }
+
+    function removeMarkAtPoint(x, y) {
+        const element = document.elementFromPoint(x, y);
+        if (!element) return false;
+
+        const mark = element.closest('mark.highlight');
+        if (mark && unwrapMark(mark)) {
+            saveHighlights();
+            return true;
+        }
+
+        return false;
+    }
+
+    function handleTouchHighlight(event) {
+        if (!isMobileView()) return;
+        if (!activeColor && !removalMode) return;
+
+        const touch = event.changedTouches && event.changedTouches[0];
+        if (!touch) return;
+
+        const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+        if (!targetElement || !targetElement.closest('.post-content')) {
+            return;
+        }
+
+        if (removalMode) {
+            if (removeMarkAtPoint(touch.clientX, touch.clientY)) {
+                event.preventDefault();
+            }
+            return;
+        }
+
+        if (!activeColor) {
+            return;
+        }
+
+        const range = getRangeFromPoint(touch.clientX, touch.clientY);
+        if (!range) {
+            return;
+        }
+
+        if (!isRangeInPostContent(range)) {
+            return;
+        }
+
+        event.preventDefault();
+        const applied = highlightRange(range, activeColor);
+        if (applied) {
+            currentSelection = null;
+        }
     }
 
     // Generar ID único
@@ -379,6 +637,18 @@
 
     // Event listeners para selección de texto
     function setupEventListeners() {
+        const postContent = document.querySelector('.post-content');
+
+        if (postContent) {
+            postContent.addEventListener('touchstart', () => {
+                if (isMobileView()) {
+                    currentSelection = null;
+                }
+            }, { passive: true });
+
+            postContent.addEventListener('touchend', handleTouchHighlight, { passive: false });
+        }
+
         // Desktop: mouseup
         document.addEventListener('mouseup', (e) => {
             // Pequeño delay para asegurar que la selección esté completa
@@ -399,6 +669,10 @@
         let touchStartPos = { x: 0, y: 0 };
 
         document.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.highlighter-menu')) {
+                return;
+            }
+
             touchStartPos = {
                 x: e.touches[0].clientX,
                 y: e.touches[0].clientY
@@ -426,7 +700,11 @@
             }
         }, { passive: true });
 
-        document.addEventListener('touchend', () => {
+        document.addEventListener('touchend', (e) => {
+            if (e.target.closest('.highlighter-menu')) {
+                return;
+            }
+
             if (longPressTimer) {
                 clearTimeout(longPressTimer);
                 longPressTimer = null;
@@ -460,14 +738,21 @@
 
         window.addEventListener('resize', () => {
             if (!highlighterMenu) return;
-            if (highlighterMenu.classList.contains('active')) {
-                const pos = getMenuPosition();
-                positionHighlighterMenu(pos);
-            } else if (isMobileView()) {
-                highlighterMenu.classList.add('mobile');
+            if (isMobileView()) {
+                ensureMobileMenuVisible();
             } else {
                 highlighterMenu.classList.remove('mobile');
+                if (highlighterMenu.classList.contains('active')) {
+                    const pos = getMenuPosition();
+                    positionHighlighterMenu(pos);
+                } else {
+                    highlighterMenu.style.bottom = '';
+                    highlighterMenu.style.left = '';
+                    highlighterMenu.style.top = '';
+                    highlighterMenu.style.transform = '';
+                }
             }
+            updateButtonStates();
         });
     }
 
@@ -477,6 +762,15 @@
         if (!document.querySelector('.post-content')) return;
 
         highlighterMenu = createHighlighterMenu();
+        updateButtonStates();
+
+        if (isMobileView()) {
+            if (COLORS.length > 0) {
+                setActiveColor(COLORS[0]);
+            }
+            ensureMobileMenuVisible();
+        }
+
         setupEventListeners();
 
         // Restaurar highlights guardados
