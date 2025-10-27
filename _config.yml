@@ -22,13 +22,6 @@ kramdown:
     block:
       line_numbers: true
 
-# Desactivar Sass (usamos CSS puro)
-sass:
-  style: compressed
-  sass_dir: _sass
-  load_paths:
-    - _sass
-
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
