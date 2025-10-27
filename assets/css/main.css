@@ -1039,6 +1039,26 @@ mark.highlight {
     display: flex;
 }
 
+.highlighter-menu.mobile {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 1rem;
+    transform: translateX(-50%);
+    width: min(420px, calc(100% - 2rem));
+    padding: 0.75rem 1rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    border-radius: 14px;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .highlighter-menu.mobile {
+        position: fixed;
+    }
+}
+
 /* Mejorar contraste en modo oscuro */
 [data-theme="dark"] .highlighter-menu {
     background: #1f2937;
@@ -1063,6 +1083,11 @@ mark.highlight {
 
 .highlighter-button:active {
     transform: scale(0.95);
+}
+
+.highlighter-button.touch-active,
+.highlighter-button:active {
+    box-shadow: inset 0 -3px 0 var(--color-text);
 }
 
 /* Hover mejorado en modo oscuro */
@@ -1121,6 +1146,11 @@ mark.highlight {
 [data-theme="dark"] .highlighter-button.remove:hover {
     background: #4b5563;
     border-color: #ef4444;
+}
+
+[data-theme="dark"] .highlighter-button.touch-active,
+[data-theme="dark"] .highlighter-button:active {
+    box-shadow: inset 0 -3px 0 #e5e7eb;
 }
 
 /* Tooltip para botones */

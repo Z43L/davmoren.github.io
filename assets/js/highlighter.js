@@ -4,11 +4,44 @@
 
     const STORAGE_KEY = 'text-highlights';
     const COLORS = ['yellow', 'green', 'blue', 'pink', 'purple', 'orange'];
+    const MOBILE_BREAKPOINT = 768;
 
     let highlighterMenu = null;
     let currentSelection = null;
     let longPressTimer = null;
     const LONG_PRESS_DURATION = 500; // ms
+
+    function isMobileView() {
+        return window.matchMedia
+            ? window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches
+            : window.innerWidth <= MOBILE_BREAKPOINT;
+    }
+
+    function handleButtonTouchStart(e) {
+        e.currentTarget.classList.add('touch-active');
+    }
+
+    function handleButtonTouchEnd(e) {
+        e.currentTarget.classList.remove('touch-active');
+    }
+
+    function positionHighlighterMenu(pos) {
+        if (!highlighterMenu) return;
+
+        if (isMobileView()) {
+            highlighterMenu.classList.add('mobile');
+            highlighterMenu.style.left = '';
+            highlighterMenu.style.top = '';
+            highlighterMenu.style.bottom = '';
+            highlighterMenu.style.transform = '';
+        } else {
+            highlighterMenu.classList.remove('mobile');
+            highlighterMenu.style.bottom = '';
+            highlighterMenu.style.left = `${pos.x}px`;
+            highlighterMenu.style.top = `${pos.y}px`;
+            highlighterMenu.style.transform = 'translateX(-50%) translateY(-100%)';
+        }
+    }
 
     // Crear el menú de highlighter
     function createHighlighterMenu() {
@@ -28,11 +61,14 @@
                 e.stopPropagation();
                 highlightSelection(color);
             });
+            button.addEventListener('touchstart', handleButtonTouchStart, { passive: true });
             button.addEventListener('touchend', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                handleButtonTouchEnd(e);
                 highlightSelection(color);
             });
+            button.addEventListener('touchcancel', handleButtonTouchEnd);
             menu.appendChild(button);
         });
 
@@ -46,11 +82,14 @@
             e.stopPropagation();
             removeHighlight();
         });
+        removeButton.addEventListener('touchstart', handleButtonTouchStart, { passive: true });
         removeButton.addEventListener('touchend', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            handleButtonTouchEnd(e);
             removeHighlight();
         });
+        removeButton.addEventListener('touchcancel', handleButtonTouchEnd);
         menu.appendChild(removeButton);
 
         document.body.appendChild(menu);
@@ -99,9 +138,7 @@
         };
 
         const pos = getMenuPosition();
-        highlighterMenu.style.left = `${pos.x}px`;
-        highlighterMenu.style.top = `${pos.y}px`;
-        highlighterMenu.style.transform = 'translateX(-50%) translateY(-100%)';
+        positionHighlighterMenu(pos);
         highlighterMenu.classList.add('active');
     }
 
@@ -109,6 +146,11 @@
     function hideHighlighterMenu() {
         if (highlighterMenu) {
             highlighterMenu.classList.remove('active');
+            highlighterMenu.classList.remove('mobile');
+            highlighterMenu.style.bottom = '';
+            highlighterMenu.style.top = '';
+            highlighterMenu.style.left = '';
+            highlighterMenu.style.transform = '';
         }
         currentSelection = null;
     }
@@ -415,6 +457,18 @@
             clearTimeout(scrollTimer);
             scrollTimer = setTimeout(hideHighlighterMenu, 100);
         }, { passive: true });
+
+        window.addEventListener('resize', () => {
+            if (!highlighterMenu) return;
+            if (highlighterMenu.classList.contains('active')) {
+                const pos = getMenuPosition();
+                positionHighlighterMenu(pos);
+            } else if (isMobileView()) {
+                highlighterMenu.classList.add('mobile');
+            } else {
+                highlighterMenu.classList.remove('mobile');
+            }
+        });
     }
 
     // Inicializar
