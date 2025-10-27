@@ -1,0 +1,69 @@
+# Configuración del sitio
+title: davmoren
+description: >-
+  Artículos sobre inteligencia artificial,
+  matemáticas y programación.
+baseurl: "" # Subcarpeta del proyecto (ejemplo: /mi-portafolio)
+url: "" # URL base (ejemplo: https://tuusuario.github.io)
+
+# Información del autor
+author:
+  name: David Moreno
+  github: Z43L
+  bio: Estudiante/Desarrollador apasionado por la IA
+
+# Configuración de build
+markdown: kramdown
+kramdown:
+  input: GFM
+  math_engine: mathjax
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+
+# Desactivar Sass (usamos CSS puro)
+sass:
+  style: compressed
+  sass_dir: _sass
+  load_paths:
+    - _sass
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-paginate
+
+# Configuración de posts
+permalink: /blog/:year/:month/:day/:title/
+paginate: 10
+
+# Archivos a excluir
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .bundle
+  - .sass-cache
+  - .jekyll-cache
+  - venv
+  - "*.py"
+  - .env
+
+# Configuración de colecciones
+collections:
+  posts:
+    output: true
+    permalink: /blog/:year/:month/:day/:title/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      comments: false

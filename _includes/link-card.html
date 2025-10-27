@@ -1,0 +1,29 @@
+{% comment %}
+  Link Card Component
+  Uso: {% include link-card.html url="https://example.com" title="Título" description="Descripción" image="url-imagen" %}
+{% endcomment %}
+
+<div class="link-card">
+  <a href="{{ include.url }}" class="link-card-overlay" target="_blank" rel="noopener noreferrer" aria-label="{{ include.title }}"></a>
+  <div class="link-card-content">
+    {% if include.image %}
+    <div class="link-card-image">
+      <img src="{{ include.image }}" alt="{{ include.title }}" loading="lazy">
+    </div>
+    {% endif %}
+    <div class="link-card-body">
+      <h4 class="link-card-title">{{ include.title }}</h4>
+      {% if include.description %}
+      <p class="link-card-description">{{ include.description }}</p>
+      {% endif %}
+      <span class="link-card-url">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        {{ include.url | remove: 'https://' | remove: 'http://' | remove: 'www.' | truncate: 40 }}
+      </span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+
+    <!-- SEO -->
+    {% seo %}
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Feed -->
+    {% feed_meta %}
+
+    <!-- MathJax para LaTeX -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            // Procesar script tags con type="math/tex"
+            processHtmlClass: 'tex2jax_process|math-display'
+        },
+        startup: {
+            ready: () => {
+                MathJax.startup.defaultReady();
+                // Procesar script tags tipo math/tex después de cargar
+                MathJax.startup.promise.then(() => {
+                    // Buscar todos los script tags tipo math/tex
+                    const scripts = document.querySelectorAll('script[type^="math/tex"]');
+                    scripts.forEach(script => {
+                        const display = script.type.includes('mode=display');
+                        const math = script.textContent;
+                        const node = document.createElement(display ? 'div' : 'span');
+                        node.innerHTML = (display ? '\\[' : '\\(') + math + (display ? '\\]' : '\\)');
+                        script.parentNode.replaceChild(node, script);
+                    });
+                    MathJax.typesetPromise();
+                });
+            }
+        }
+    };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <div class="nav-brand">
+                <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+            </div>
+            <div class="nav-links">
+                <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Inicio</a>
+                <a href="{{ '/blog/' | relative_url }}" {% if page.url contains '/blog' %}class="active"{% endif %}>Blog</a>
+                <a href="{{ '/about/' | relative_url }}" {% if page.url == '/about/' %}class="active"{% endif %}>Acerca de</a>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar modo oscuro">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2.5a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2.5zM10 15.25a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V16a.75.75 0 01.75-.75zM17.5 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5a.75.75 0 01.75.75zM4.75 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5H4a.75.75 0 01.75.75zM14.596 5.404a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 01-1.061-1.06l1.06-1.061a.75.75 0 011.061 0zM7.525 12.475a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 01-1.061-1.06l1.06-1.061a.75.75 0 011.061 0zM5.404 5.404a.75.75 0 011.06 0l1.061 1.06a.75.75 0 11-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM12.475 12.475a.75.75 0 011.06 0l1.061 1.06a.75.75 0 11-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM10 7a3 3 0 100 6 3 3 0 000-6z"/>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        {{ content }}
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p>&copy; {{ 'now' | date: "%Y" }} {{ site.author.name }}. Todos los derechos reservados.</p>
+            <p class="footer-links">
+                {% if site.author.github %}
+                <a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noopener">GitHub</a>
+                {% endif %}
+                <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script para modo oscuro -->
+    <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
+
+    <!-- Script para highlighter de texto -->
+    <script src="{{ '/assets/js/highlighter.js' | relative_url }}"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% comment %}
+  Embed Component (para YouTube, Vimeo, etc.)
+  Uso: {% include embed.html url="https://www.youtube.com/embed/VIDEO_ID" title="Título del video" %}
+  Uso alternativo: {% include embed.html url="URL" ratio="16:9" %}
+{% endcomment %}
+
+{% assign ratio = include.ratio | default: "16:9" %}
+{% if ratio == "16:9" %}
+  {% assign padding = "56.25%" %}
+{% elsif ratio == "4:3" %}
+  {% assign padding = "75%" %}
+{% elsif ratio == "21:9" %}
+  {% assign padding = "42.85%" %}
+{% else %}
+  {% assign padding = "56.25%" %}
+{% endif %}
+
+<div class="embed-container" style="padding-bottom: {{ padding }};">
+  <iframe
+    src="{{ include.url }}"
+    title="{{ include.title | default: 'Contenido embebido' }}"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    loading="lazy">
+  </iframe>
+</div>
