@@ -13,12 +13,48 @@
     let removalMode = false;
     const colorButtons = new Map();
     let removeButtonRef = null;
+    let mobileWidthQuery = null;
+    let coarsePointerQuery = null;
     const LONG_PRESS_DURATION = 500; // ms
 
+    function updateMediaQueries() {
+        if (!window.matchMedia) return;
+        mobileWidthQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
+        coarsePointerQuery = window.matchMedia('(pointer: coarse)');
+    }
+
+    function addMediaQueryListener(query, handler) {
+        if (!query || !handler) return;
+        if (typeof query.addEventListener === 'function') {
+            query.addEventListener('change', handler);
+        } else if (typeof query.addListener === 'function') {
+            query.addListener(handler);
+        }
+    }
+
     function isMobileView() {
-        return window.matchMedia
-            ? window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches
-            : window.innerWidth <= MOBILE_BREAKPOINT;
+        if (mobileWidthQuery && mobileWidthQuery.matches) return true;
+        if (coarsePointerQuery && coarsePointerQuery.matches) return true;
+
+        if (window.matchMedia) {
+            try {
+                if (window.matchMedia('(pointer: coarse)').matches) return true;
+            } catch (e) {
+                // Ignore matchMedia errors in older browsers
+            }
+            try {
+                if (window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches) return true;
+            } catch (e) {
+                // Ignore matchMedia errors in older browsers
+            }
+        }
+
+        if (typeof navigator !== 'undefined') {
+            if (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) return true;
+            if (navigator.msMaxTouchPoints && navigator.msMaxTouchPoints > 0) return true;
+        }
+
+        return 'ontouchstart' in window || window.innerWidth <= MOBILE_BREAKPOINT;
     }
 
     function handleButtonTouchStart(e) {
@@ -56,8 +92,18 @@
         updateButtonStates();
     }
 
+    function ensureDefaultMobileColor() {
+        if (!COLORS.length) return;
+        if (!activeColor) {
+            setActiveColor(COLORS[0]);
+        } else {
+            updateButtonStates();
+        }
+    }
+
     function ensureMobileMenuVisible() {
         if (!highlighterMenu) return;
+        ensureDefaultMobileColor();
         highlighterMenu.classList.add('mobile');
         highlighterMenu.classList.add('active');
         highlighterMenu.style.left = '';
@@ -79,6 +125,32 @@
             highlighterMenu.style.top = `${pos.y}px`;
             highlighterMenu.style.transform = 'translateX(-50%) translateY(-100%)';
         }
+    }
+
+    function handleViewportModeChange() {
+        if (!highlighterMenu) return;
+
+        if (isMobileView()) {
+            ensureMobileMenuVisible();
+        } else {
+            highlighterMenu.classList.remove('mobile');
+
+            if (highlighterMenu.classList.contains('active')) {
+                const pos = getMenuPosition();
+                highlighterMenu.style.bottom = '';
+                highlighterMenu.style.left = `${pos.x}px`;
+                highlighterMenu.style.top = `${pos.y}px`;
+                highlighterMenu.style.transform = 'translateX(-50%) translateY(-100%)';
+            } else if (!currentSelection) {
+                highlighterMenu.classList.remove('active');
+                highlighterMenu.style.bottom = '';
+                highlighterMenu.style.left = '';
+                highlighterMenu.style.top = '';
+                highlighterMenu.style.transform = '';
+            }
+        }
+
+        updateButtonStates();
     }
 
     // Crear el menú de highlighter
@@ -738,21 +810,12 @@
 
         window.addEventListener('resize', () => {
             if (!highlighterMenu) return;
-            if (isMobileView()) {
-                ensureMobileMenuVisible();
-            } else {
-                highlighterMenu.classList.remove('mobile');
-                if (highlighterMenu.classList.contains('active')) {
-                    const pos = getMenuPosition();
-                    positionHighlighterMenu(pos);
-                } else {
-                    highlighterMenu.style.bottom = '';
-                    highlighterMenu.style.left = '';
-                    highlighterMenu.style.top = '';
-                    highlighterMenu.style.transform = '';
-                }
-            }
-            updateButtonStates();
+            handleViewportModeChange();
+        });
+
+        window.addEventListener('orientationchange', () => {
+            if (!highlighterMenu) return;
+            setTimeout(handleViewportModeChange, 50);
         });
     }
 
@@ -761,17 +824,19 @@
         // Solo activar en páginas de posts
         if (!document.querySelector('.post-content')) return;
 
+        updateMediaQueries();
         highlighterMenu = createHighlighterMenu();
         updateButtonStates();
 
         if (isMobileView()) {
-            if (COLORS.length > 0) {
-                setActiveColor(COLORS[0]);
-            }
             ensureMobileMenuVisible();
         }
 
         setupEventListeners();
+        addMediaQueryListener(mobileWidthQuery, handleViewportModeChange);
+        addMediaQueryListener(coarsePointerQuery, handleViewportModeChange);
+
+        handleViewportModeChange();
 
         // Restaurar highlights guardados
         window.addEventListener('load', restoreHighlights);
