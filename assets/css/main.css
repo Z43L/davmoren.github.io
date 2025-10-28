@@ -1151,8 +1151,14 @@ mark.highlight {
 }
 
 @media (min-width: 769px) {
-    .highlighter-menu {
+    .highlighter-menu,
+    .highlighter-menu.active,
+    .highlighter-menu.docked {
         display: none !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(1rem) !important;
     }
 }
 
