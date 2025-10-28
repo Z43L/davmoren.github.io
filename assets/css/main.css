@@ -271,6 +271,8 @@ a:hover {
 
 .post-content {
     font-size: 1.0625rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* ================================
@@ -337,6 +339,7 @@ a:hover {
     -webkit-overflow-scrolling: touch;
     box-shadow: 0 2px 8px var(--color-shadow);
     position: relative;
+    max-width: 100%;
 }
 
 .post-content pre code {
@@ -349,6 +352,7 @@ a:hover {
     line-height: 1.6;
     font-weight: 400;
     font-size: 0.875rem;
+    min-width: 100%;
 }
 
 /* Scrollbar personalizado para bloques de código */
