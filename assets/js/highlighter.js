@@ -11,8 +11,10 @@
     let longPressTimer = null;
     let activeColor = null;
     let removalMode = false;
+    let highlightEnabled = true;
     const colorButtons = new Map();
     let removeButtonRef = null;
+    let toggleButtonRef = null;
     let mobileWidthQuery = null;
     let coarsePointerQuery = null;
     const LONG_PRESS_DURATION = 500; // ms
@@ -67,24 +69,58 @@
 
     function updateButtonStates() {
         colorButtons.forEach((button, color) => {
-            const isSelected = !removalMode && activeColor === color;
+            const isSelected = !removalMode && highlightEnabled && activeColor === color;
             button.classList.toggle('selected', isSelected);
         });
 
         if (removeButtonRef) {
             removeButtonRef.classList.toggle('selected', removalMode);
+            removeButtonRef.setAttribute('aria-pressed', removalMode ? 'true' : 'false');
+        }
+
+        if (toggleButtonRef) {
+            toggleButtonRef.classList.toggle('selected', highlightEnabled && !removalMode);
+            toggleButtonRef.textContent = highlightEnabled ? 'Resaltado activo' : 'Resaltar texto';
+            toggleButtonRef.setAttribute('aria-pressed', highlightEnabled && !removalMode ? 'true' : 'false');
+        }
+
+        if (highlighterMenu) {
+            highlighterMenu.classList.toggle('removal-mode', removalMode);
         }
     }
 
-    function setActiveColor(color) {
+    function setHighlightEnabled(state) {
+        highlightEnabled = Boolean(state);
+
+        if (highlightEnabled) {
+            removalMode = false;
+            if (!activeColor && COLORS.length) {
+                setActiveColor(COLORS[0], { enable: false });
+                return;
+            }
+        }
+
+        updateButtonStates();
+    }
+
+    function setActiveColor(color, options = {}) {
+        const { enable = true } = options;
         activeColor = color;
         removalMode = false;
-        updateButtonStates();
+        if (enable) {
+            setHighlightEnabled(true);
+        } else {
+            updateButtonStates();
+        }
     }
 
     function enableRemovalMode() {
         if (removalMode) {
             removalMode = false;
+            if (highlightEnabled && !activeColor && COLORS.length) {
+                setActiveColor(COLORS[0], { enable: false });
+                return;
+            }
         } else {
             activeColor = null;
             removalMode = true;
@@ -92,65 +128,41 @@
         updateButtonStates();
     }
 
-    function ensureDefaultMobileColor() {
-        if (!COLORS.length) return;
-        if (!activeColor) {
-            setActiveColor(COLORS[0]);
-        } else {
-            updateButtonStates();
-        }
+    function ensureDefaultColor() {
+        if (activeColor || !COLORS.length) return;
+        setActiveColor(COLORS[0], { enable: false });
     }
 
     function ensureMobileMenuVisible() {
         if (!highlighterMenu) return;
-        ensureDefaultMobileColor();
-        highlighterMenu.classList.add('mobile');
+
+        if (highlightEnabled) {
+            ensureDefaultColor();
+        }
+
+        highlighterMenu.classList.add('docked');
         highlighterMenu.classList.add('active');
+
+        if (isMobileView()) {
+            highlighterMenu.classList.add('mobile');
+        } else {
+            highlighterMenu.classList.remove('mobile');
+        }
+
         highlighterMenu.style.left = '';
         highlighterMenu.style.top = '';
         highlighterMenu.style.bottom = '';
         highlighterMenu.style.transform = '';
+
         updateButtonStates();
     }
 
-    function positionHighlighterMenu(pos) {
-        if (!highlighterMenu) return;
-
-        if (isMobileView()) {
-            ensureMobileMenuVisible();
-        } else {
-            highlighterMenu.classList.remove('mobile');
-            highlighterMenu.style.bottom = '';
-            highlighterMenu.style.left = `${pos.x}px`;
-            highlighterMenu.style.top = `${pos.y}px`;
-            highlighterMenu.style.transform = 'translateX(-50%) translateY(-100%)';
-        }
+    function positionHighlighterMenu() {
+        ensureMobileMenuVisible();
     }
 
     function handleViewportModeChange() {
-        if (!highlighterMenu) return;
-
-        if (isMobileView()) {
-            ensureMobileMenuVisible();
-        } else {
-            highlighterMenu.classList.remove('mobile');
-
-            if (highlighterMenu.classList.contains('active')) {
-                const pos = getMenuPosition();
-                highlighterMenu.style.bottom = '';
-                highlighterMenu.style.left = `${pos.x}px`;
-                highlighterMenu.style.top = `${pos.y}px`;
-                highlighterMenu.style.transform = 'translateX(-50%) translateY(-100%)';
-            } else if (!currentSelection) {
-                highlighterMenu.classList.remove('active');
-                highlighterMenu.style.bottom = '';
-                highlighterMenu.style.left = '';
-                highlighterMenu.style.top = '';
-                highlighterMenu.style.transform = '';
-            }
-        }
-
-        updateButtonStates();
+        ensureMobileMenuVisible();
     }
 
     // Crear el menú de highlighter
@@ -159,19 +171,46 @@
         menu.className = 'highlighter-menu';
         menu.id = 'highlighter-menu';
 
-        // Botones de colores
+        const toggleWrapper = document.createElement('div');
+        toggleWrapper.className = 'highlighter-toggle';
+
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'highlighter-button toggle';
+        toggleButton.type = 'button';
+        toggleButton.setAttribute('aria-label', 'Activar o desactivar resaltado táctil');
+        toggleButtonRef = toggleButton;
+        toggleButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setHighlightEnabled(!highlightEnabled);
+        });
+        toggleButton.addEventListener('touchstart', handleButtonTouchStart, { passive: true });
+        toggleButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleButtonTouchEnd(e);
+            setHighlightEnabled(!highlightEnabled);
+        });
+        toggleButton.addEventListener('touchcancel', handleButtonTouchEnd);
+        toggleWrapper.appendChild(toggleButton);
+        menu.appendChild(toggleWrapper);
+
+        const palette = document.createElement('div');
+        palette.className = 'highlighter-color-group';
+        menu.appendChild(palette);
+
         COLORS.forEach(color => {
             const button = document.createElement('button');
             button.className = `highlighter-button ${color}`;
             button.title = color.charAt(0).toUpperCase() + color.slice(1);
             button.setAttribute('data-color', color);
-            button.type = 'button'; // Importante para prevenir submit
+            button.type = 'button';
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 if (currentSelection) {
                     highlightSelection(color);
-                } else if (isMobileView()) {
+                } else {
                     setActiveColor(color);
                 }
             });
@@ -182,26 +221,30 @@
                 handleButtonTouchEnd(e);
                 if (currentSelection) {
                     highlightSelection(color);
-                } else if (isMobileView()) {
+                } else {
                     setActiveColor(color);
                 }
             });
             button.addEventListener('touchcancel', handleButtonTouchEnd);
             colorButtons.set(color, button);
-            menu.appendChild(button);
+            palette.appendChild(button);
         });
 
-        // Botón para remover highlight
+        const actions = document.createElement('div');
+        actions.className = 'highlighter-actions';
+        menu.appendChild(actions);
+
         const removeButton = document.createElement('button');
         removeButton.className = 'highlighter-button remove';
-        removeButton.title = 'Quitar resaltado';
+        removeButton.title = 'Borrar resaltado';
         removeButton.type = 'button';
+        removeButton.setAttribute('aria-label', 'Borrar resaltado');
         removeButton.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             if (currentSelection) {
                 removeHighlight();
-            } else if (isMobileView()) {
+            } else {
                 enableRemovalMode();
             }
         });
@@ -212,13 +255,13 @@
             handleButtonTouchEnd(e);
             if (currentSelection) {
                 removeHighlight();
-            } else if (isMobileView()) {
+            } else {
                 enableRemovalMode();
             }
         });
         removeButton.addEventListener('touchcancel', handleButtonTouchEnd);
         removeButtonRef = removeButton;
-        menu.appendChild(removeButton);
+        actions.appendChild(removeButton);
 
         document.body.appendChild(menu);
         return menu;
@@ -265,30 +308,28 @@
             range: range.cloneRange()
         };
 
-        const pos = getMenuPosition();
-        positionHighlighterMenu(pos);
-        highlighterMenu.classList.add('active');
+        positionHighlighterMenu();
     }
 
     // Ocultar el menú
     function hideHighlighterMenu() {
+        currentSelection = null;
+
         if (!highlighterMenu) {
-            currentSelection = null;
             return;
         }
 
-        if (isMobileView()) {
+        if (highlighterMenu.classList.contains('docked')) {
             ensureMobileMenuVisible();
-        } else {
-            highlighterMenu.classList.remove('active');
-            highlighterMenu.classList.remove('mobile');
-            highlighterMenu.style.bottom = '';
-            highlighterMenu.style.top = '';
-            highlighterMenu.style.left = '';
-            highlighterMenu.style.transform = '';
+            return;
         }
 
-        currentSelection = null;
+        highlighterMenu.classList.remove('active');
+        highlighterMenu.classList.remove('mobile');
+        highlighterMenu.style.bottom = '';
+        highlighterMenu.style.top = '';
+        highlighterMenu.style.left = '';
+        highlighterMenu.style.transform = '';
     }
 
     function isRangeInPostContent(range) {
@@ -535,6 +576,7 @@
 
     function handleTouchHighlight(event) {
         if (!isMobileView()) return;
+        if (!highlightEnabled && !removalMode) return;
         if (!activeColor && !removalMode) return;
 
         const touch = event.changedTouches && event.changedTouches[0];
@@ -826,11 +868,8 @@
 
         updateMediaQueries();
         highlighterMenu = createHighlighterMenu();
-        updateButtonStates();
-
-        if (isMobileView()) {
-            ensureMobileMenuVisible();
-        }
+        ensureDefaultColor();
+        ensureMobileMenuVisible();
 
         setupEventListeners();
         addMediaQueryListener(mobileWidthQuery, handleViewportModeChange);
