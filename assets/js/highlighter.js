@@ -364,11 +364,25 @@
         if (!selection.rangeCount) return { x: 0, y: 0 };
 
         const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
+        let rect = range.getBoundingClientRect();
+
+        if ((!rect || (rect.width === 0 && rect.height === 0)) && typeof range.getClientRects === 'function') {
+            const clientRects = Array.from(range.getClientRects());
+            if (clientRects.length > 0) {
+                rect = clientRects[0];
+            }
+        }
+
+        if (!rect) {
+            return { x: 0, y: 0 };
+        }
+
+        const centerX = rect.left + (rect.width / 2);
+        const targetY = rect.top;
 
         return {
-            x: rect.left + (rect.width / 2),
-            y: rect.top - 10 // Encima de la selección
+            x: centerX,
+            y: targetY - 10 // Encima de la selección
         };
     }
 
