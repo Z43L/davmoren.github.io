@@ -3,6 +3,8 @@
     'use strict';
 
     const STORAGE_KEY = 'text-highlights';
+    const NOTES_STORAGE_KEY = 'text-notes';
+    const PAGE_KEY = window.location.pathname;
     const COLORS = ['yellow', 'green', 'blue', 'pink', 'purple', 'orange'];
     const MOBILE_BREAKPOINT = 768;
 
@@ -15,9 +17,22 @@
     const colorButtons = new Map();
     let removeButtonRef = null;
     let toggleButtonRef = null;
+    let noteButtonRef = null;
     let mobileWidthQuery = null;
     let coarsePointerQuery = null;
     const LONG_PRESS_DURATION = 500; // ms
+    const NOTE_CONTEXT_RADIUS = 40;
+    let noteDraftRange = null;
+    let noteDraftContext = null;
+    let noteModal = null;
+    let noteModalPreview = null;
+    let noteModalEditor = null;
+    let noteModalTabs = null;
+    let noteModalSaveButton = null;
+    let noteModalCancelButton = null;
+    let noteModalMode = 'preview';
+    let noteModalState = { noteId: null, isNew: false };
+    const notesMap = new Map();
 
     function updateMediaQueries() {
         if (!window.matchMedia) return;
@@ -79,6 +94,12 @@
             removeButtonRef.setAttribute('aria-label', removalMode
                 ? 'Modo borrar activado'
                 : 'Borrar resaltado');
+        }
+
+        if (noteButtonRef) {
+            const enabled = Boolean(currentSelection && highlightEnabled);
+            noteButtonRef.disabled = !enabled;
+            noteButtonRef.classList.toggle('disabled', !enabled);
         }
 
         if (toggleButtonRef) {
@@ -169,11 +190,13 @@
                 highlighterMenu.style.left = '';
                 highlighterMenu.style.top = '';
                 highlighterMenu.style.bottom = '';
-                highlighterMenu.style.transform = '';
-                highlighterMenu.style.visibility = '';
-                highlighterMenu.style.pointerEvents = '';
-                highlighterMenu.style.opacity = '';
-            }
+        highlighterMenu.style.transform = '';
+        highlighterMenu.style.visibility = '';
+       highlighterMenu.style.pointerEvents = '';
+        highlighterMenu.style.opacity = '';
+
+        updateButtonStates();
+    }
         }
 
         updateButtonStates();
@@ -319,6 +342,34 @@
             palette.appendChild(button);
         });
 
+        const noteButton = document.createElement('button');
+        noteButton.className = 'highlighter-button note';
+        noteButton.type = 'button';
+        noteButton.setAttribute('aria-label', 'Crear nota');
+        noteButton.innerHTML = `
+            <span class="sr-only">Crear nota</span>
+            <svg class="icon icon-note" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M6 2a2 2 0 00-2 2v16l8-3 8 3V4a2 2 0 00-2-2H6zm2 5h8a1 1 0 010 2H8a1 1 0 110-2zm0 4h5a1 1 0 010 2H8a1 1 0 110-2z"/>
+            </svg>
+        `;
+        noteButton.disabled = true;
+        noteButton.classList.add('disabled');
+        noteButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            createNoteFromSelection();
+        });
+        noteButton.addEventListener('touchstart', handleButtonTouchStart, { passive: true });
+        noteButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleButtonTouchEnd(e);
+            createNoteFromSelection();
+        });
+        noteButton.addEventListener('touchcancel', handleButtonTouchEnd);
+        noteButtonRef = noteButton;
+        toolbar.appendChild(noteButton);
+
         const removeButton = document.createElement('button');
         removeButton.className = 'highlighter-button remove';
         removeButton.title = 'Borrar resaltado';
@@ -414,6 +465,7 @@
         };
 
         positionHighlighterMenu();
+        updateButtonStates();
     }
 
     // Ocultar el menú
@@ -586,6 +638,437 @@
         currentSelection = null;
     }
 
+    function getRangeContext(range) {
+        const text = range.toString();
+        const ancestor = range.commonAncestorContainer;
+        const referenceNode = ancestor.nodeType === Node.TEXT_NODE ? ancestor.parentElement : ancestor;
+        const fullText = referenceNode ? referenceNode.textContent : text;
+
+        const index = fullText ? fullText.indexOf(text) : -1;
+        const before = index !== -1 ? fullText.substring(Math.max(0, index - NOTE_CONTEXT_RADIUS), index) : '';
+        const after = index !== -1 ? fullText.substring(index + text.length, index + text.length + NOTE_CONTEXT_RADIUS) : '';
+
+        return { text, before, after };
+    }
+
+    function createNoteFromSelection() {
+        if (!currentSelection || !currentSelection.range) {
+            console.warn('No selection available for note creation');
+            return;
+        }
+
+        const selectionText = currentSelection.range.toString().trim();
+
+        if (!selectionText) {
+            console.warn('Selection is empty, cannot create note');
+            return;
+        }
+
+        noteDraftRange = currentSelection.range.cloneRange();
+        noteDraftContext = getRangeContext(currentSelection.range);
+
+        const defaultContent = `> ${selectionText}\n\n`;
+
+        openNoteModal({
+            id: null,
+            content: defaultContent,
+            text: selectionText
+        }, {
+            mode: 'preview',
+            isNew: true
+        });
+    }
+
+    function ensureNoteModal() {
+        if (noteModal) return;
+
+        noteModal = document.createElement('div');
+        noteModal.className = 'note-modal';
+        noteModal.setAttribute('role', 'dialog');
+        noteModal.setAttribute('aria-modal', 'true');
+        noteModal.innerHTML = `
+            <div class="note-modal__backdrop" data-action="close"></div>
+            <div class="note-modal__dialog">
+                <header class="note-modal__header">
+                    <h2 class="note-modal__title">Nota rápida</h2>
+                    <button type="button" class="note-modal__close" aria-label="Cerrar nota" data-action="close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </header>
+                <div class="note-modal__tabs">
+                    <button type="button" class="note-modal__tab active" data-mode="preview">Preview</button>
+                    <button type="button" class="note-modal__tab" data-mode="edit">Editar</button>
+                </div>
+                <div class="note-modal__body">
+                    <div class="note-modal__preview" tabindex="0"></div>
+                    <textarea class="note-modal__editor" spellcheck="false"></textarea>
+                </div>
+                <footer class="note-modal__footer">
+                    <div class="note-modal__meta" aria-live="polite"></div>
+                    <div class="note-modal__actions">
+                        <button type="button" class="note-modal__button secondary" data-action="cancel">Cancelar</button>
+                        <button type="button" class="note-modal__button primary" data-action="save">Guardar</button>
+                    </div>
+                </footer>
+            </div>
+        `;
+
+        document.body.appendChild(noteModal);
+
+        noteModalPreview = noteModal.querySelector('.note-modal__preview');
+        noteModalEditor = noteModal.querySelector('.note-modal__editor');
+        noteModalTabs = Array.from(noteModal.querySelectorAll('.note-modal__tab'));
+        noteModalSaveButton = noteModal.querySelector('[data-action="save"]');
+        noteModalCancelButton = noteModal.querySelector('[data-action="cancel"]');
+
+        noteModalTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                setNoteModalMode(tab.getAttribute('data-mode'));
+            });
+        });
+
+        noteModalSaveButton.addEventListener('click', saveCurrentNote);
+        noteModalCancelButton.addEventListener('click', closeNoteModal);
+        noteModal.querySelectorAll('[data-action="close"]').forEach(btn => {
+            btn.addEventListener('click', closeNoteModal);
+        });
+
+        noteModalEditor.addEventListener('input', () => {
+            if (noteModalMode === 'preview') {
+                noteModalPreview.innerHTML = renderMarkdown(noteModalEditor.value || '');
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && noteModal && noteModal.classList.contains('active')) {
+                closeNoteModal();
+            }
+        });
+    }
+
+    function setNoteModalMode(mode) {
+        if (!noteModal) return;
+        if (mode !== 'preview' && mode !== 'edit') return;
+
+        noteModalMode = mode;
+
+        noteModalTabs.forEach(tab => {
+            tab.classList.toggle('active', tab.getAttribute('data-mode') === mode);
+        });
+
+        if (mode === 'preview') {
+            noteModalEditor.classList.remove('active');
+            noteModalEditor.setAttribute('aria-hidden', 'true');
+            noteModalPreview.classList.add('active');
+            noteModalPreview.setAttribute('aria-hidden', 'false');
+            noteModalPreview.innerHTML = renderMarkdown(noteModalEditor.value || '');
+        } else {
+            noteModalEditor.classList.add('active');
+            noteModalEditor.setAttribute('aria-hidden', 'false');
+            noteModalPreview.classList.remove('active');
+            noteModalPreview.setAttribute('aria-hidden', 'true');
+            noteModalEditor.focus();
+        }
+    }
+
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function applyInlineMarkdown(text) {
+        let safe = escapeHtml(text);
+        safe = safe.replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+            .replace(/~~([^~]+)~~/g, '<del>$1</del>');
+        return safe;
+    }
+
+    function renderMarkdown(markdown) {
+        const source = (markdown || '').replace(/\r\n/g, '\n');
+        if (!source.trim()) {
+            return '<p class="note-modal__empty">Sin contenido</p>';
+        }
+
+        const lines = source.split('\n');
+        const html = [];
+        let inList = false;
+        let inCode = false;
+        let codeBuffer = [];
+
+        const closeList = () => {
+            if (inList) {
+                html.push('</ul>');
+                inList = false;
+            }
+        };
+
+        const closeCode = () => {
+            if (inCode) {
+                html.push(`<pre class="note-modal__code"><code>${codeBuffer.join('\n')}</code></pre>`);
+                inCode = false;
+                codeBuffer = [];
+            }
+        };
+
+        lines.forEach(rawLine => {
+            const line = rawLine.trim();
+
+            if (line.startsWith('```')) {
+                if (inCode) {
+                    closeCode();
+                } else {
+                    closeList();
+                    inCode = true;
+                    codeBuffer = [];
+                }
+                return;
+            }
+
+            if (inCode) {
+                codeBuffer.push(escapeHtml(rawLine));
+                return;
+            }
+
+            if (!line) {
+                closeList();
+                html.push('');
+                return;
+            }
+
+            if (/^#{1,6}\s/.test(line)) {
+                closeList();
+                const level = line.match(/^#{1,6}/)[0].length;
+                const content = applyInlineMarkdown(line.replace(/^#{1,6}\s/, ''));
+                html.push(`<h${level}>${content}</h${level}>`);
+                return;
+            }
+
+            if (/^>\s/.test(line)) {
+                closeList();
+                const content = applyInlineMarkdown(line.replace(/^>\s/, ''));
+                html.push(`<blockquote>${content}</blockquote>`);
+                return;
+            }
+
+            if (/^-\s+/.test(line)) {
+                if (!inList) {
+                    html.push('<ul>');
+                    inList = true;
+                }
+                const content = applyInlineMarkdown(line.replace(/^-\s+/, ''));
+                html.push(`<li>${content}</li>`);
+                return;
+            }
+
+            closeList();
+            html.push(`<p>${applyInlineMarkdown(line)}</p>`);
+        });
+
+        closeList();
+        closeCode();
+
+        return html.join('');
+    }
+
+    function openNoteModal(note, options = {}) {
+        ensureNoteModal();
+
+        const { mode = 'preview', isNew = false } = options;
+        const noteContent = note.content || '';
+
+        noteModalState = {
+            noteId: note.id,
+            isNew
+        };
+
+        noteModalEditor.value = noteContent;
+        noteModalPreview.innerHTML = renderMarkdown(noteContent);
+
+        const meta = noteModal.querySelector('.note-modal__meta');
+        if (note.createdAt) {
+            const updated = note.updatedAt ? new Date(note.updatedAt) : null;
+            const created = new Date(note.createdAt);
+            meta.textContent = updated
+                ? `Actualizada ${updated.toLocaleString()} • Creada ${created.toLocaleString()}`
+                : `Creada ${created.toLocaleString()}`;
+        } else if (isNew && note.text) {
+            meta.textContent = `Desde: "${note.text}"`;
+        } else {
+            meta.textContent = '';
+        }
+
+        setNoteModalMode(mode);
+
+        noteModal.classList.add('active');
+        document.body.classList.add('note-modal-open');
+    }
+
+    function closeNoteModal() {
+        if (!noteModal) return;
+
+        noteModal.classList.remove('active');
+        document.body.classList.remove('note-modal-open');
+        noteModalState = { noteId: null, isNew: false };
+        noteDraftRange = null;
+        noteDraftContext = null;
+        noteModalMode = 'preview';
+    }
+
+    function createNoteLinkElement(note) {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.className = 'note-link';
+        link.textContent = note.text;
+        link.setAttribute('data-note-id', note.id);
+        link.setAttribute('role', 'button');
+        link.setAttribute('aria-label', `Nota: ${note.text}`);
+        return link;
+    }
+
+    function attachNoteLinkHandlers(link) {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            const noteId = link.getAttribute('data-note-id');
+            if (!noteId || !notesMap.has(noteId)) return;
+            const note = notesMap.get(noteId);
+            openNoteModal(note, { mode: 'preview', isNew: false });
+        });
+    }
+
+    function insertNoteLink(note, range) {
+        if (!range) return;
+
+        const link = createNoteLinkElement(note);
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+
+        const tempRange = range.cloneRange();
+        tempRange.deleteContents();
+        tempRange.insertNode(link);
+
+        link.normalize();
+        attachNoteLinkHandlers(link);
+
+        selection.removeAllRanges();
+    }
+
+    function applyNoteLinkFromStorage(note) {
+        if (!note || !note.text) return;
+        const postContent = document.querySelector('.post-content');
+        if (!postContent) return;
+
+        if (postContent.querySelector(`a.note-link[data-note-id="${note.id}"]`)) {
+            return;
+        }
+
+        const walker = document.createTreeWalker(
+            postContent,
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+
+        let node;
+        while (node = walker.nextNode()) {
+            const textContent = node.textContent;
+            const index = textContent.indexOf(note.text);
+
+            if (index === -1) continue;
+
+            const before = textContent.substring(Math.max(0, index - NOTE_CONTEXT_RADIUS), index);
+            const after = textContent.substring(index + note.text.length, index + note.text.length + NOTE_CONTEXT_RADIUS);
+
+            const beforeMatch = note.before ? before.includes(note.before.trim()) : true;
+            const afterMatch = note.after ? after.includes(note.after.trim()) : true;
+
+            if (!beforeMatch && !afterMatch) continue;
+
+            const range = document.createRange();
+            range.setStart(node, index);
+            range.setEnd(node, index + note.text.length);
+
+            insertNoteLink(note, range);
+            return;
+        }
+    }
+
+    function loadNotes() {
+        try {
+            const storage = JSON.parse(localStorage.getItem(NOTES_STORAGE_KEY) || '{}');
+            const pageNotes = storage[PAGE_KEY] || [];
+            notesMap.clear();
+            pageNotes.forEach(note => {
+                notesMap.set(note.id, note);
+            });
+        } catch (error) {
+            console.warn('Could not load notes from storage', error);
+            notesMap.clear();
+        }
+    }
+
+    function saveNotes() {
+        const storage = JSON.parse(localStorage.getItem(NOTES_STORAGE_KEY) || '{}');
+        storage[PAGE_KEY] = Array.from(notesMap.values());
+        localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(storage));
+    }
+
+    function restoreNotes() {
+        notesMap.forEach(note => {
+            applyNoteLinkFromStorage(note);
+        });
+    }
+
+    function saveCurrentNote() {
+        const content = noteModalEditor.value || '';
+        if (!content.trim()) {
+            noteModalEditor.focus();
+            return;
+        }
+
+        const timestamp = Date.now();
+
+        if (noteModalState.isNew) {
+            if (!noteDraftRange || !noteDraftContext) {
+                console.warn('Missing range context for new note');
+                closeNoteModal();
+                return;
+            }
+
+            const id = generateId('note');
+            const note = {
+                id,
+                content,
+                text: noteDraftContext.text,
+                before: noteDraftContext.before,
+                after: noteDraftContext.after,
+                createdAt: timestamp,
+                updatedAt: timestamp
+            };
+
+            notesMap.set(id, note);
+            saveNotes();
+            insertNoteLink(note, noteDraftRange);
+            hideHighlighterMenu();
+            closeNoteModal();
+        } else if (noteModalState.noteId && notesMap.has(noteModalState.noteId)) {
+            const note = notesMap.get(noteModalState.noteId);
+            note.content = content;
+            note.updatedAt = timestamp;
+            notesMap.set(note.id, note);
+            saveNotes();
+            closeNoteModal();
+        } else {
+            closeNoteModal();
+        }
+    }
+
     function resolveTextPosition(node, offset) {
         if (!node) return null;
 
@@ -723,8 +1206,8 @@
     }
 
     // Generar ID único
-    function generateId() {
-        return `hl-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    function generateId(prefix = 'hl') {
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
 
     // Guardar highlights en localStorage
@@ -978,6 +1461,7 @@
         highlighterMenu = createHighlighterMenu();
         ensureDefaultColor();
         ensureMobileMenuVisible();
+        loadNotes();
 
         setupEventListeners();
         addMediaQueryListener(mobileWidthQuery, handleViewportModeChange);
@@ -985,12 +1469,17 @@
 
         handleViewportModeChange();
 
-        // Restaurar highlights guardados
-        window.addEventListener('load', restoreHighlights);
+        const restoreAll = () => {
+            restoreHighlights();
+            restoreNotes();
+        };
+
+        // Restaurar datos guardados
+        window.addEventListener('load', restoreAll);
 
         // Si ya está cargado
         if (document.readyState === 'complete') {
-            restoreHighlights();
+            restoreAll();
         }
     }
 
