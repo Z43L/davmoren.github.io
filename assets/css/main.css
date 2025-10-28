@@ -231,7 +231,7 @@ a:hover {
 
 .post {
     margin-bottom: 4rem;
-    padding-bottom: 4rem;
+    padding-bottom: calc(8rem + env(safe-area-inset-bottom, 0px));
 }
 
 .post-header {
@@ -1087,14 +1087,15 @@ mark.highlight {
     position: fixed;
     z-index: 9999;
     display: none;
-    left: 0;
-    top: 0;
-    transform: translate(-50%, -130%);
-    background: var(--color-bg);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
     border: 1px solid var(--color-border);
-    border-radius: 16px;
+    border-radius: 999px;
     padding: 0.6rem 0.85rem;
     box-shadow: 0 16px 32px var(--color-shadow);
+    backdrop-filter: blur(12px);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.25s ease, transform 0.25s ease;
@@ -1133,7 +1134,7 @@ mark.highlight {
 }
 
 @media (max-width: 768px) {
-    .highlighter-menu.docked {
+    .highlighter-menu {
         left: 0;
         right: 0;
         bottom: 0;
@@ -1143,29 +1144,30 @@ mark.highlight {
         border: none;
         border-top: 1px solid var(--color-border);
         padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+        display: none;
         box-shadow: 0 -12px 30px rgba(15, 23, 42, 0.18);
         backdrop-filter: none;
         opacity: 1;
         pointer-events: auto;
     }
 
-    .highlighter-menu.docked.active {
+    .highlighter-menu.active {
         display: block;
     }
 
-    .highlighter-menu.docked.removal-mode {
+    .highlighter-menu.removal-mode {
         border-top-color: #ef4444;
         box-shadow: 0 -12px 30px rgba(239, 68, 68, 0.25);
     }
 
-    .highlighter-menu.docked .highlighter-toolbar {
+    .highlighter-toolbar {
         max-width: min(680px, calc(100% - 1.5rem));
         margin: 0 auto;
         flex-wrap: wrap;
         gap: 0.5rem;
     }
 
-    .highlighter-menu.docked .highlighter-color-group {
+    .highlighter-color-group {
         flex-wrap: wrap;
         gap: 0.35rem;
     }
@@ -1185,7 +1187,7 @@ mark.highlight {
 }
 
 @media (max-width: 768px) {
-    [data-theme="dark"] .highlighter-menu.docked {
+    [data-theme="dark"] .highlighter-menu {
         border: none;
         border-top: 1px solid #374151;
         box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.45);
