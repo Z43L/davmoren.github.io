@@ -76,12 +76,19 @@
         if (removeButtonRef) {
             removeButtonRef.classList.toggle('selected', removalMode);
             removeButtonRef.setAttribute('aria-pressed', removalMode ? 'true' : 'false');
+            removeButtonRef.setAttribute('aria-label', removalMode
+                ? 'Modo borrar activado'
+                : 'Borrar resaltado');
         }
 
         if (toggleButtonRef) {
-            toggleButtonRef.classList.toggle('selected', highlightEnabled && !removalMode);
-            toggleButtonRef.textContent = highlightEnabled ? 'Resaltado activo' : 'Resaltar texto';
-            toggleButtonRef.setAttribute('aria-pressed', highlightEnabled && !removalMode ? 'true' : 'false');
+            const toggleActive = highlightEnabled && !removalMode;
+            toggleButtonRef.classList.toggle('selected', toggleActive);
+            toggleButtonRef.classList.toggle('is-on', toggleActive);
+            toggleButtonRef.setAttribute('aria-pressed', toggleActive ? 'true' : 'false');
+            toggleButtonRef.setAttribute('aria-label', toggleActive
+                ? 'Desactivar resaltado táctil'
+                : 'Activar resaltado táctil');
         }
 
         if (highlighterMenu) {
@@ -171,13 +178,20 @@
         menu.className = 'highlighter-menu';
         menu.id = 'highlighter-menu';
 
-        const toggleWrapper = document.createElement('div');
-        toggleWrapper.className = 'highlighter-toggle';
+        const toolbar = document.createElement('div');
+        toolbar.className = 'highlighter-toolbar';
+        menu.appendChild(toolbar);
 
         const toggleButton = document.createElement('button');
         toggleButton.className = 'highlighter-button toggle';
         toggleButton.type = 'button';
-        toggleButton.setAttribute('aria-label', 'Activar o desactivar resaltado táctil');
+        toggleButton.setAttribute('aria-label', 'Activar resaltado táctil');
+        toggleButton.innerHTML = `
+            <span class="sr-only">Resaltar</span>
+            <svg class="icon icon-highlight" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 17.25V21h3.75l9.51-9.51-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+        `;
         toggleButtonRef = toggleButton;
         toggleButton.addEventListener('click', (e) => {
             e.preventDefault();
@@ -192,12 +206,11 @@
             setHighlightEnabled(!highlightEnabled);
         });
         toggleButton.addEventListener('touchcancel', handleButtonTouchEnd);
-        toggleWrapper.appendChild(toggleButton);
-        menu.appendChild(toggleWrapper);
+        toolbar.appendChild(toggleButton);
 
         const palette = document.createElement('div');
         palette.className = 'highlighter-color-group';
-        menu.appendChild(palette);
+        toolbar.appendChild(palette);
 
         COLORS.forEach(color => {
             const button = document.createElement('button');
@@ -230,15 +243,17 @@
             palette.appendChild(button);
         });
 
-        const actions = document.createElement('div');
-        actions.className = 'highlighter-actions';
-        menu.appendChild(actions);
-
         const removeButton = document.createElement('button');
         removeButton.className = 'highlighter-button remove';
         removeButton.title = 'Borrar resaltado';
         removeButton.type = 'button';
         removeButton.setAttribute('aria-label', 'Borrar resaltado');
+        removeButton.innerHTML = `
+            <span class="sr-only">Borrar resaltado</span>
+            <svg class="icon icon-eraser" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3.4 16.6a2 2 0 000 2.83l2.17 2.17a2 2 0 002.83 0l9.19-9.19a2 2 0 000-2.83l-2.17-2.17a2 2 0 00-2.83 0L3.4 16.6zm6.4 4.24l-1.41 1.41a1 1 0 01-1.42 0l-2.17-2.17a1 1 0 010-1.41l1.41-1.41 3.59 3.58zM20 20.5H12a.5.5 0 110-1h8a.5.5 0 110 1z"></path>
+            </svg>
+        `;
         removeButton.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -261,7 +276,7 @@
         });
         removeButton.addEventListener('touchcancel', handleButtonTouchEnd);
         removeButtonRef = removeButton;
-        actions.appendChild(removeButton);
+        toolbar.appendChild(removeButton);
 
         document.body.appendChild(menu);
         return menu;
