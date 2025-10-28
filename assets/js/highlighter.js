@@ -147,29 +147,105 @@
             ensureDefaultColor();
         }
 
-        highlighterMenu.classList.add('docked');
-        highlighterMenu.classList.add('active');
+        const mobileMode = isMobileView();
 
-        if (isMobileView()) {
+        if (mobileMode) {
+            highlighterMenu.classList.add('docked');
             highlighterMenu.classList.add('mobile');
+            highlighterMenu.classList.add('active');
+            highlighterMenu.style.left = '';
+            highlighterMenu.style.top = '';
+            highlighterMenu.style.bottom = '';
+            highlighterMenu.style.transform = '';
+            highlighterMenu.style.visibility = '';
+            highlighterMenu.style.pointerEvents = '';
+            highlighterMenu.style.opacity = '';
         } else {
             highlighterMenu.classList.remove('mobile');
-        }
+            highlighterMenu.classList.remove('docked');
 
-        highlighterMenu.style.left = '';
-        highlighterMenu.style.top = '';
-        highlighterMenu.style.bottom = '';
-        highlighterMenu.style.transform = '';
+            if (!currentSelection) {
+                highlighterMenu.classList.remove('active');
+                highlighterMenu.style.left = '';
+                highlighterMenu.style.top = '';
+                highlighterMenu.style.bottom = '';
+                highlighterMenu.style.transform = '';
+                highlighterMenu.style.visibility = '';
+                highlighterMenu.style.pointerEvents = '';
+                highlighterMenu.style.opacity = '';
+            }
+        }
 
         updateButtonStates();
     }
 
     function positionHighlighterMenu() {
+        if (!highlighterMenu) return;
+
         ensureMobileMenuVisible();
+
+        if (isMobileView()) {
+            return;
+        }
+
+        if (highlightEnabled) {
+            ensureDefaultColor();
+        }
+
+        highlighterMenu.classList.remove('mobile');
+        highlighterMenu.classList.remove('docked');
+
+        if (!currentSelection || !currentSelection.range) {
+            highlighterMenu.classList.remove('active');
+            highlighterMenu.style.left = '';
+            highlighterMenu.style.top = '';
+            highlighterMenu.style.bottom = '';
+            highlighterMenu.style.transform = '';
+            highlighterMenu.style.visibility = '';
+            highlighterMenu.style.pointerEvents = '';
+            updateButtonStates();
+            return;
+        }
+
+        highlighterMenu.classList.add('active');
+        highlighterMenu.style.bottom = '';
+        highlighterMenu.style.visibility = 'visible';
+        highlighterMenu.style.pointerEvents = 'auto';
+        highlighterMenu.style.opacity = '';
+
+        updateButtonStates();
+
+        window.requestAnimationFrame(() => {
+            const { x, y } = getMenuPosition();
+
+            if (x === 0 && y === 0) {
+                return;
+            }
+
+            const menuWidth = highlighterMenu.offsetWidth || 260;
+            const menuHeight = highlighterMenu.offsetHeight || 60;
+            const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            const padding = 24;
+
+            const clampedX = Math.min(
+                Math.max(x, padding + menuWidth / 2),
+                viewportWidth - padding - menuWidth / 2
+            );
+
+            let top = y - menuHeight - 16;
+            if (top < padding) {
+                top = Math.min(y + 16, viewportHeight - padding - menuHeight);
+            }
+
+            highlighterMenu.style.left = `${clampedX}px`;
+            highlighterMenu.style.top = `${top}px`;
+            highlighterMenu.style.transform = 'translateX(-50%)';
+        });
     }
 
     function handleViewportModeChange() {
-        ensureMobileMenuVisible();
+        positionHighlighterMenu();
     }
 
     // Crear el menú de highlighter
@@ -345,6 +421,9 @@
         highlighterMenu.style.top = '';
         highlighterMenu.style.left = '';
         highlighterMenu.style.transform = '';
+        highlighterMenu.style.visibility = '';
+        highlighterMenu.style.pointerEvents = '';
+        highlighterMenu.style.opacity = '';
     }
 
     function isRangeInPostContent(range) {
