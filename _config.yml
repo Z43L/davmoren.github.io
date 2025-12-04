@@ -6,6 +6,9 @@ description: >-
 baseurl: "/davmoren.github.io" # Subcarpeta del proyecto (ejemplo: /mi-portafolio)
 url: "https://z43l.github.io/davmoren.github.io/" # URL base (ejemplo: https://tuusuario.github.io)
 
+# Permitir que Jekyll publique entradas con fecha futura
+future: true
+
 # Información del autor
 author:
   name: David Moreno
