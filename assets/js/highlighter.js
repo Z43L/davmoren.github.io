@@ -110,6 +110,16 @@
         updateButtonStates();
     }
 
+    function initializeHighlightState() {
+        if (isMobileView()) {
+            activeColor = null;
+            removalMode = false;
+            setHighlightEnabled(false);
+        } else {
+            ensureDefaultColor();
+        }
+    }
+
     function setActiveColor(color, options = {}) {
         const { enable = true } = options;
         activeColor = color;
@@ -976,7 +986,7 @@
 
         updateMediaQueries();
         highlighterMenu = createHighlighterMenu();
-        ensureDefaultColor();
+        initializeHighlightState();
         ensureMobileMenuVisible();
 
         setupEventListeners();
