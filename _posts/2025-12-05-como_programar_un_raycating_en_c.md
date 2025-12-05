@@ -1,3 +1,12 @@
+---
+layout: post
+title: "raycasting C"
+date: 2025-12-05 2:31:00 -0000
+author: Z43L
+tags: [C, Raycasting, algoritm]
+reading_time: 8
+excerpt: "Metodología de desarrollo de un Raycasting en C"
+---
 # Guía de Aprendizaje Extensa sobre: Sobre Como Programar Un Raycating En C
 
 ## Índice Detallado
