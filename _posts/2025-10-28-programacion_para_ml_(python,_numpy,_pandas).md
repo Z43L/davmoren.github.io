@@ -300,9 +300,9 @@ La óptica geométrica, establecida en el siglo XVII por **Descartes** y **Ferma
 
 1. **Ley de reflexión:**  \(\theta_i = \theta_r\).  
 2. **Ley de refracción (Snell‑Descartes):**  
-   \[
-   n_1 \sin \theta_i = n_2 \sin \theta_t
-   \]
+   <script type="math/tex; mode=display">
+n_1 \sin \theta_i = n_2 \sin \theta_t
+</script>
 
 Estos enunciados son *algebraicos*; por lo tanto, pueden implementarse mediante ecuaciones lineales y trigonométricas en una computadora.
 
@@ -324,9 +324,9 @@ typedef struct {
 
 Un rayo se describe con la ecuación paramétrica:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{p}(t) = \mathbf{o} + t\mathbf{d}, \qquad t \ge 0
-\]
+</script>
 
 donde:
 - \(\mathbf{o}\) es el origen del rayo,
@@ -401,11 +401,11 @@ A finales de los 70, **James Kajiya**, entonces investigador visitante en Bell L
 
 ### 4.1. La ecuación de renderizado (versión simplificada)
 
-\[
+<script type="math/tex; mode=display">
 L_o(\mathbf{x}, \omega_o) = L_e(\mathbf{x}, \omega_o) +
 \int_{\Omega} f_r(\mathbf{x}, \omega_i, \omega_o) \, L_i(\mathbf{x}, \omega_i) \,
 \cos\theta_i \, d\omega_i
-\]
+</script>
 
 Donde:
 - \(L_o\) es la radiancia reflejada hacia la dirección \(\omega_o\).
@@ -5888,9 +5888,9 @@ int x_err = y = 5, y + 2; // equivale a (x = (y = 5)), y+2 → x = 5, y+2 se des
 
 Supongamos que implementamos la fórmula clásica de proyección de pantalla:
 
-\[
+<script type="math/tex; mode=display">
 \text{projHeight} = \frac{C}{\text{dist}} \qquad\text{donde } C = \text{distancia al plano de proyección}.
-\]
+</script>
 
 Código ingenuo:
 
@@ -6172,9 +6172,9 @@ typedef struct {
 - El vector `plane` tiene una longitud que depende del FOV deseado. Por ejemplo, para un FOV de 60°, `|plane| = tan(FOV/2)`.  
 - Con `dir` y `plane` podemos construir cualquier rayo mediante una combinación lineal:  
 
-  \[
-  \text{rayDir} = \text{cam.dir} + \text{cam.plane} \times \text{cameraX}
-  \]
+  <script type="math/tex; mode=display">
+\text{rayDir} = \text{cam.dir} + \text{cam.plane} \times \text{cameraX}
+</script>
 
   donde `cameraX` está en el rango \([-1, 1]\) según la columna de pantalla.
 
@@ -12180,9 +12180,9 @@ Un vector 𝑣 = (𝑥, 𝑦) puede interpretarse como:
 
 El **espacio vectorial** ℝ² está dotado de una **norma Euclídea**:  
 
-\[
+<script type="math/tex; mode=display">
 \| \mathbf{v} \| = \sqrt{x^{2}+y^{2}}
-\]
+</script>
 
 Esta norma determina la *longitud* del vector y será fundamental para la normalización (obtener un vector unitario) que se necesita al calcular la dirección de un rayo.
 
@@ -12229,9 +12229,9 @@ Sumar `A = (aₓ, aᵧ)` y `B = (bₓ, bᵧ)` produce un nuevo vector `C = A + B
 
 En ray‑casting, la suma se usa para **desplazar** la posición del jugador o la posición de un rayo a partir de la dirección y la distancia recorrida:
 
-\[
+<script type="math/tex; mode=display">
 \text{posicion\_actual} = \text{posicion\_inicial} + \text{direccion} \times \text{distancia}
-\]
+</script>
 
 ### 2.2. Implementación en C
 
@@ -12286,9 +12286,9 @@ El resultado será `(22.0f, 12.45f)`, lo que corresponde a un paso de 0.05 unida
 
 Restar `B` de `A` equivale a **desplazar** `B` al origen y luego invertir su sentido:
 
-\[
+<script type="math/tex; mode=display">
 A - B = (aₓ-bₓ,\; aᵧ-bᵧ)
-\]
+</script>
 
 Geometricamente, el vector resultante apunta desde `B` hacia `A`. En ray‑casting la resta se emplea para:
 
@@ -12345,9 +12345,9 @@ El `sqDist` es la **distancia al cuadrado**, suficiente para decidir cuál celda
 
 Multiplicar un vector `v = (x, y)` por un escalar `k ∈ ℝ` genera:
 
-\[
+<script type="math/tex; mode=display">
 k\,\mathbf{v} = (k\,x,\; k\,y)
-\]
+</script>
 
 Esto **cambia la longitud** del vector en un factor `|k|` y, si `k` es negativo, invierte su dirección. En la sintaxis de C, el operador `*` ya está reservado para este propósito, pero por claridad se encapsula en una función.
 
@@ -12474,9 +12474,9 @@ Este recorrido histórico subraya que, aunque la *hardware* cambie, los concepto
 
 1. **Implementar** una función `vec2_rotate(Vec2 v, float angle)` que gire un vector en sentido contrario a las agujas del reloj usando la fórmula:
 
-   \[
-   v' = (\; v_x \cos\theta - v_y \sin\theta,\; v_x \sin\theta + v_y \cos\theta\; )
-   \]
+   <script type="math/tex; mode=display">
+v' = (\; v_x \cos\theta - v_y \sin\theta,\; v_x \sin\theta + v_y \cos\theta\; )
+</script>
 
 2. Modificar el bucle de movimiento del jugador para **permitir desplazamiento diagonal** con velocidad constante, combinando las teclas *W* y *A* mediante suma de vectores y normalización final.
 
@@ -12502,16 +12502,16 @@ En un motor de ray‑casting la única información geométrica que se necesita 
 
 Dados dos vectores en ℝ³  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{a}= (a_x,\;a_y,\;a_z),\qquad
 \mathbf{b}= (b_x,\;b_y,\;b_z),
-\]
+</script>
 
 su **producto escalar** se define como  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{a}\cdot\mathbf{b}=a_x b_x + a_y b_y + a_z b_z .
-\]
+</script>
 
 El resultado es un **número real**, no un vector. Esta operación cumple:
 
@@ -12533,17 +12533,17 @@ El concepto de producto interno aparece en la obra de **Hermann Grassmann** (184
 
 El vínculo geométrico más útil del producto escalar es su relación con el **coseno del ángulo** \(\theta\) que separa a \(\mathbf{a}\) y \(\mathbf{b}\):
 
-\[
+<script type="math/tex; mode=display">
 \boxed{\;\mathbf{a}\cdot\mathbf{b}= \|\mathbf{a}\|\;\|\mathbf{b}\|\;\cos\theta\;}
-\]
+</script>
 
 De aquí se deduce:
 
-\[
+<script type="math/tex; mode=display">
 \cos\theta = \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\;\|\mathbf{b}\|},
 \qquad
 \theta = \arccos\!\left(\frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\;\|\mathbf{b}\|}\right).
-\]
+</script>
 
 ### 2.1 Interpretación geométrica  
 
@@ -12557,10 +12557,10 @@ En ray‑casting, este resultado permite saber si la superficie está mirando ha
 
 El **producto escalar** también representa la magnitud de la proyección de \(\mathbf{a}\) sobre \(\mathbf{b}\) multiplicada por \(\|\mathbf{b}\|\):
 
-\[
+<script type="math/tex; mode=display">
 \text{proj}_{\mathbf{b}}(\mathbf{a}) = 
 \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{b}\|^{2}}\,\mathbf{b}.
-\]
+</script>
 
 Esta formulación es la base de la **reflexión de Rayleigh‑Fresnel** y de algoritmos de **intersección de planos**.
 
@@ -12582,9 +12582,9 @@ Si `cosTheta <= 0` el rayo incide por la *parte interna* del objeto (p.ej. una e
 
 El modelo de Lambert establece que la radiancia difusa es proporcional al **coseno del ángulo entre la normal y el vector de luz**:
 
-\[
+<script type="math/tex; mode=display">
 L_d = k_d \, I_L \, \max(0,\ \mathbf{n}\cdot\mathbf{l}),
-\]
+</script>
 
 donde \(\mathbf{l}\) es la dirección de la luz (normalizada). En código C:
 
@@ -12597,9 +12597,9 @@ color = multiply(kd, scale(I_L, lambert));
 
 Para el término especular se necesita el **vector espejo** \(\mathbf{r}\):
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}=2(\mathbf{n}\cdot\mathbf{l})\mathbf{n}-\mathbf{l}.
-\]
+</script>
 
 El coseno entre \(\mathbf{r}\) y la dirección del observador \(\mathbf{v}\) (también normalizada) determina la intensidad especular:
 
@@ -12854,14 +12854,14 @@ A continuación se aborda su definición matemática, su interpretación geomét
 
 Dados dos vectores **a** = (aₓ, aᵧ, a_z) y **b** = (bₓ, bᵧ, b_z) en ℝ³, el producto vectorial **c** = **a** × **b** se define como
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{c}= 
 \begin{pmatrix}
 a_y b_z - a_z b_y\\[4pt]
 a_z b_x - a_x b_z\\[4pt]
 a_x b_y - a_y b_x
 \end{pmatrix}
-\]
+</script>
 
 Las propiedades que hacen al producto cruzado indispensable en gráficos 3‑D son:
 
@@ -12981,9 +12981,9 @@ El vector resultante `n_raw` tiene módulo igual al **doble del área del trián
 
 El cálculo de la reflexión de un rayo incidente **I** contra una superficie con normal **N** utiliza la siguiente fórmula vectorial:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{R} = \mathbf{I} - 2(\mathbf{I}\cdot\mathbf{N})\mathbf{N}
-\]
+</script>
 
 Aquí el producto cruzado no aparece directamente, pero sí es útil cuando la normal **N** se deriva de dos vectores tangentes **T** y **B** (tangent‑bitangent) que forman un sistema ortonormado local. En muchos shaders de rasterización (y en algunos algoritmos de ray‑casting que usan mapas normales), se necesita construir **N** a partir de **T** y **B**:
 
@@ -13023,13 +13023,13 @@ Para aplicar **mapas de normales** (normal mapping) en ray‑casting, es necesar
 
 3. **Construir** la matriz 3×3 TBN que transforma de coordenadas de textura → mundo:
 
-   \[
-   \mathbf{M}_{\text{TBN}} = \begin{bmatrix}
+   <script type="math/tex; mode=display">
+\mathbf{M}_{\text{TBN}} = \begin{bmatrix}
    \mathbf{T}_x & \mathbf{B}_x & \mathbf{N}_x\\
    \mathbf{T}_y & \mathbf{B}_y & \mathbf{N}_y\\
    \mathbf{T}_z & \mathbf{B}_z & \mathbf{N}_z
    \end{bmatrix}
-   \]
+</script>
 
 4. **Aplicar** la matriz al vector de la normal del mapa:
 
@@ -13206,7 +13206,7 @@ En el algoritmo clásico de *Wolfenstein 3D* (Doom, 1993) los rayos se generan a
 
 Sea \(\theta\) el ángulo de giro (positivo → sentido antihorario). Un punto \((x, y)\) del plano se transforma a \((x', y')\) mediante:
 
-\[
+<script type="math/tex; mode=display">
 \begin{bmatrix}
 x'\\ y'
 \end{bmatrix}
@@ -13220,7 +13220,7 @@ x'\\ y'
 \begin{bmatrix}
 x\\ y
 \end{bmatrix}
-\]
+</script>
 
 La matriz \(R(\theta)\) es ortogonal (\(R^\top R = I\)) y su determinante vale +1, garantizando una **rotación pura** sin escalado ni reflexión.
 
@@ -13548,9 +13548,9 @@ while (!quit) {
 
 Los primeros ray‑casters (Wolfenstein 3D, 1992) usaban exclusivamente dos vectores 2‑D: dirección y plano de cámara. Ese enfoque se derivó directamente del algoritmo de *ray‑casting* de *Doom* (John Carmack, 1993), donde la proyección se realiza mediante una sencilla fórmula lineal:
 
-\[
+<script type="math/tex; mode=display">
 \text{rayDir} = \text{dir} + \text{plane} \times \text{cameraX}
-\]
+</script>
 
 Con el paso de los años y la convergencia hacia **gráficos 3‑D de propósito general**, la comunidad adoptó la *matriz de vista* (view matrix) completa, basada en la formulación de **OpenGL** y **DirectX**. La matriz de vista combina una rotación (orientación) y una traslación (posición) en un solo objeto 4×4, pero los conceptos fundamentales siguen siendo los estudiados aquí: la rotación todavía está representada por sub‑matrices 3×3.
 
@@ -13602,9 +13602,9 @@ Por lo tanto, la calidad de la **inversión de matrices** y la **condición num�
 
 Dados una matriz `A ∈ ℝⁿˣⁿ` y un vector `b`, consideremos el sistema lineal `A x = b`. Si perturbamos ligeramente `b` (por error de redondeo, ruido de entrada, etc.) obtenemos otro sistema `A x̂ = b̂`. La **condición numérica** es la medida que indica cuánto varía la solución `x̂` respecto a la perturbación de `b`. Formalmente:
 
-\[
+<script type="math/tex; mode=display">
 \kappa(A) = \|A\| \, \|A^{-1}\|
-\]
+</script>
 
 donde `‖·‖` puede ser cualquier norma matricial (la 2‑norma es la más habitual).  
 
@@ -13790,10 +13790,10 @@ int mat4_inverse(const mat4 *A, mat4 *invA)
 
 Sea `Â = A + ΔA` la representación flotante de `A` y `Â⁻¹` la inversa obtenida mediante un algoritmo estable (por ejemplo, LU con pivoteo). Wilkinson demostró que el error relativo está acotado por:
 
-\[
+<script type="math/tex; mode=display">
 \frac{\|Â^{-1} - A^{-1}\|}{\|A^{-1}\|} \leq
 \mathcal{O}\bigl(\kappa(A)\bigr) \, \varepsilon_m
-\]
+</script>
 
 donde `εₘ` es la epsilon de la máquina (≈ 1.19×10⁻⁷ para `float`, 2.22×10⁻¹⁶ para `double`).  
 En palabras simples: **entre mayor sea el número de condición, mayor será la pérdida de precisión** en la inversa, incluso si el algoritmo es perfectamente estable.
@@ -14651,9 +14651,9 @@ Dominar este segmento del pipeline no solo hace que el motor sea más robusto; t
 
 En cualquier algoritmo de *ray‑casting* o *ray‑tracing* el **rayo** se define formalmente como una semirrecta en el espacio tridimensional:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{R}(t)=\mathbf O + t\;\mathbf D , \qquad t\ge 0
-\]
+</script>
 
 donde:
 
@@ -14697,9 +14697,9 @@ El origen del rayo no tiene que estar en el centro óptico; puede desplazarse ar
 
 Cuando la cámara se mueve o rota, \(\mathbf O\) se transforma mediante la **matriz de vista** \(V\) (también llamada *camera matrix*). La ecuación típica es:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf O_{\text{world}} = V^{-1} \cdot \mathbf O_{\text{camera}}
-\]
+</script>
 
 En código:
 
@@ -14729,9 +14729,9 @@ Si la cámara está en `(0,0,0)` y la vista es la identidad, entonces `O` es sim
 
 El proceso estándar es:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf D_{\text{unit}} = \frac{\mathbf D}{\|\mathbf D\|} \quad\text{con}\quad \|\mathbf D\| = \sqrt{D_x^2 + D_y^2 + D_z^2}
-\]
+</script>
 
 En C:
 
@@ -14763,28 +14763,28 @@ Para lanzar un rayo desde la cámara hacia cada píxel, es necesario mapear la p
 
 1. **Normalizar coordenadas de pantalla** a rango \([-1, 1]\):
 
-   \[
-   u = \frac{2(p_x + 0.5)}{W} - 1,\qquad
+   <script type="math/tex; mode=display">
+u = \frac{2(p_x + 0.5)}{W} - 1,\qquad
    v = 1 - \frac{2(p_y + 0.5)}{H}
-   \]
+</script>
 
    donde \(W\) y \(H\) son el ancho y alto del framebuffer.
 
 2. **Aplicar la relación de aspecto** y el **campo de visión vertical** \(\theta\):
 
-   \[
-   \alpha = \tan\!\left(\frac{\theta}{2}\right)
-   \]
-   \[
-   x_{\text{cam}} = u \cdot \alpha \cdot \frac{W}{H},\qquad
+   <script type="math/tex; mode=display">
+\alpha = \tan\!\left(\frac{\theta}{2}\right)
+</script>
+   <script type="math/tex; mode=display">
+x_{\text{cam}} = u \cdot \alpha \cdot \frac{W}{H},\qquad
    y_{\text{cam}} = v \cdot \alpha
-   \]
+</script>
 
 3. **Construir el vector en espacio cámara**:
 
-   \[
-   \mathbf D_{\text{cam}} = (x_{\text{cam}},\, y_{\text{cam}},\, -1)
-   \]
+   <script type="math/tex; mode=display">
+\mathbf D_{\text{cam}} = (x_{\text{cam}},\, y_{\text{cam}},\, -1)
+</script>
 
    (asumiendo que la cámara mira hacia \(-Z\) en coordenadas de cámara).
 
@@ -14888,9 +14888,9 @@ Este fragmento se ejecuta miles de veces por fotograma; la mayor parte del coste
 
 Para iluminaciones globales *ambientales* o *environment maps* se emplean **rayos paralelos** cuya magnitud no importa; se usan como si el origen estuviera en el infinito:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf O = (0,0,0), \qquad \mathbf D = \text{dirección del eje} \; (x,y,z) \text{ normalizada}
-\]
+</script>
 
 En este caso, la distancia recorrida se mide en unidades arbitrarias; el motor de trazado simplemente intersecta objetos con la semirrecta definida por \(\mathbf D\).
 
@@ -14988,9 +14988,9 @@ Con esta base teórica y práctica, el lector está preparado para implementar l
 
 En cualquier algoritmo de *ray‑casting* (y, por extensión, de *ray‑tracing*) el punto que controla la posición a lo largo de un rayo es el **parámetro escalar** `t`. La ecuación  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{P}(t)=\mathbf{O}+t\;\mathbf{D}
-\]
+</script>
 
 es la base matemática que permite transformar una descripción abstracta de “una línea que parte del observador” en coordenadas concretas que pueden ser probadas contra la escena (esferas, planos, mallas, etc.). A continuación analizaremos (a) la naturaleza geométrica de `t`, (b) sus rangos de validez, (c) cómo se determina en la práctica mediante intersecciones, y (d) las implicaciones de precisión y rendimiento en C.
 
@@ -15039,21 +15039,21 @@ En computación gráfica, la formulación `P(t)=O+t·D` se popularizó con los p
 
 Una esfera con centro `C` y radio `r` se define implícitamente como:
 
-\[
+<script type="math/tex; mode=display">
 \|\mathbf{P} - \mathbf{C}\|^{2} = r^{2}
-\]
+</script>
 
 Reemplazando `P(t)`:
 
-\[
+<script type="math/tex; mode=display">
 \| \mathbf{O}+t\mathbf{D} - \mathbf{C} \|^{2} = r^{2}
-\]
+</script>
 
 Desarrollando:
 
-\[
+<script type="math/tex; mode=display">
 (\mathbf{D}\cdot\mathbf{D})t^{2}+2\mathbf{D}\cdot(\mathbf{O}-\mathbf{C})t+(\mathbf{O}-\mathbf{C})\cdot(\mathbf{O}-\mathbf{C})-r^{2}=0
-\]
+</script>
 
 Como `D` está normalizado, `D·D = 1`, obtenemos una **ecuación cuadrática** `at²+bt+c=0` con:
 
@@ -15073,17 +15073,17 @@ Los valores de `t` son las raíces de esta ecuación; se calcula el discriminant
 
 Un plano se describe mediante la ecuación implícita:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{N}\cdot(\mathbf{P} - \mathbf{P_0}) = 0
-\]
+</script>
 
 donde `N` es la normal unitária y `P₀` un punto cualquiera del plano. Sustituyendo `P(t)`:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{N}\cdot(\mathbf{O}+t\mathbf{D} - \mathbf{P_0}) = 0
 \Rightarrow
 t = \frac{\mathbf{N}\cdot(\mathbf{P_0}-\mathbf{O})}{\mathbf{N}\cdot\mathbf{D}}
-\]
+</script>
 
 El denominador `N·D` representa el **coseno del ángulo** entre el rayo y la normal. Si es cercano a cero, el rayo es paralelo al plano y la intersección no es válida (o es infinita).
 
@@ -15201,9 +15201,9 @@ int main(void)
 
 En un motor real, la cámara posee **planos de recorte** cerca (`near`) y lejos (`far`). Sólo los valores `t` que cumplan
 
-\[
+<script type="math/tex; mode=display">
 t_{near} \le t \le t_{far}
-\]
+</script>
 
 son considerados. Esto evita renderizar objetos detrás del plano de visión o a distancias infinitas que desperdician recursos. En la práctica:
 
@@ -15226,9 +15226,9 @@ El intervalo también controla la **precisión numérica**: valores extremadamen
 
 En C, los tipos `float` y `double` siguen la norma IEEE‑754. La mantisa de un `float` tiene 23 bits de precisión (≈ 7 decimales). Cuando se realizan expresiones como  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{O}+t\mathbf{D}
-\]
+</script>
 
 las operaciones se evalúan en **precisión simple** a menos que se haya activado *extended precision* (`-ffloat-store` o `-mfpmath=387`).  
 
@@ -15321,9 +15321,9 @@ Esta sección explora a fondo la matemática, la historia y la implementación p
 
 La resolución de ecuaciones cuadráticas está documentada desde la antigüedad babilónica (~2000 a.C.). Los babilonios utilizaban métodos geométricos equivalentes a completar el cuadrado, mientras que los matemáticos indios y árabes introdujeron notaciones más abstractas. La fórmula cerrada que hoy debe a **Bhāskara I** (c. 1110) y **Al‑Kāzim** (c. 1020) está escrita como:
 
-\[
+<script type="math/tex; mode=display">
 x = \frac{-b \pm \sqrt{b^{2} - 4ac}}{2a}.
-\]
+</script>
 
 En el contexto de la computación gráfica, la ecuación surge de la sustitución del rayo en la *ecuación implícita* de la geometría. Por ejemplo, la esfera de radio \(r\) y centro \(\mathbf{C}\) está definida por \(\| \mathbf{P} - \mathbf{C} \|^{2} - r^{2}=0\). Al reemplazar \(\mathbf{P}\) por \(\mathbf{O} + t\mathbf{D}\) y expandir, aparecen términos cuadráticos en \(t\). La solución de esa ecuación determina los valores de parámetro \(t\) donde el rayo intersecta la esfera.
 
@@ -15333,9 +15333,9 @@ En el contexto de la computación gráfica, la ecuación surge de la sustitució
 
 Para cualquier superficie implícita cuyas ecuaciones al sustituir el rayo den como resultado un polinomio de grado 2, podemos escribirla como:
 
-\[
+<script type="math/tex; mode=display">
 a\,t^{2} + b\,t + c = 0,
-\]
+</script>
 
 donde  
 
@@ -15380,12 +15380,12 @@ presenta dos problemas críticos en aritmética de coma flotante:
 
 Una práctica habitual es reescribir la solución usando el **trick** de Vieta:
 
-\[
+<script type="math/tex; mode=display">
 q = -\frac{1}{2}\left( b + \operatorname{sgn}(b)\,\sqrt{\Delta} \right),
-\]
-\[
+</script>
+<script type="math/tex; mode=display">
 t_{0} = \frac{q}{a}, \qquad t_{1} = \frac{c}{q}.
-\]
+</script>
 
 Donde `sgn(b)` devuelve `+1` si `b ≥ 0`, `-1` en caso contrario. Este enfoque evita la resta de números casi iguales, pues la suma dentro de `q` siempre lleva los dos términos con el mismo signo, reduciendo la cancelación.
 
@@ -15397,24 +15397,24 @@ A continuación se presentan los coeficientes para tres primitivas frecuentes en
 
 #### 4.1 Esfera  
 
-\[
+<script type="math/tex; mode=display">
 \begin{aligned}
 \mathbf{L} &= \mathbf{O} - \mathbf{C} \\
 a &= \mathbf{D}\cdot\mathbf{D} \\
 b &= 2\,\mathbf{D}\cdot\mathbf{L} \\
 c &= \mathbf{L}\cdot\mathbf{L} - r^{2}
 \end{aligned}
-\]
+</script>
 
 #### 4.2 Cilindro infinito (eje alineado con Y)  
 
-\[
+<script type="math/tex; mode=display">
 \begin{aligned}
 a &= D_{x}^{2} + D_{z}^{2} \\
 b &= 2\,(O_{x}D_{x} + O_{z}D_{z}) \\
 c &= O_{x}^{2} + O_{z}^{2} - r^{2}
 \end{aligned}
-\]
+</script>
 
 (Se ignora la coordenada Y porque el cilindro es ilimitado en esa dirección; los cortes laterales requieren pruebas adicionales.)
 
@@ -15422,15 +15422,15 @@ c &= O_{x}^{2} + O_{z}^{2} - r^{2}
 
 Aunque un plano da una ecuación lineal, en algunos algoritmos se mantiene la misma estructura para uniformidad:
 
-\[
+<script type="math/tex; mode=display">
 a = 0,\quad b = \mathbf{N}\cdot\mathbf{D},\quad c = \mathbf{N}\cdot(\mathbf{O}-\mathbf{P_0}),
-\]
+</script>
 
 donde \(\mathbf{N}\) es la normal del plano y \(\mathbf{P_0}\) un punto en él. La solución consiste en una única raíz:
 
-\[
+<script type="math/tex; mode=display">
 t = -\frac{c}{b},
-\]
+</script>
 
 siempre que \(b \neq 0\).
 
@@ -15684,23 +15684,23 @@ Con una solución robusta de la ecuación cuadrática, el motor de ray‑casting
 
 En cualquier algoritmo de **ray‑casting** o **ray‑tracing** la operación más frecuente es resolver la intersección entre un rayo y una superficie implícita. La mayoría de los objetos elementales (esferas, cilindros, conos, paraboloides…) están descritos por una **ecuación cuadrática** en la variable escalar *t* —el parámetro que avanza a lo largo del rayo:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{p}(t)=\mathbf{o}+t\mathbf{d},
 \qquad t\ge 0,
-\]
+</script>
 
 donde **o** es el origen del rayo y **d** su dirección normalizada.  
 Al sustituir *p(t)* en la ecuación implícita de la superficie obtenemos una ecuación del tipo
 
-\[
+<script type="math/tex; mode=display">
 at^{2}+bt+c=0.
-\]
+</script>
 
 El **discriminante**  
 
-\[
+<script type="math/tex; mode=display">
 \Delta = b^{2}-4ac
-\]
+</script>
 
 determina cuántas soluciones reales existen y, por ende, cuántas intersecciones físicas ocurren. Esta sección analiza en profundidad los tres posibles valores de \(\Delta\) y muestra, paso a paso, cómo manejarlos de forma robusta en C.
 
@@ -15746,17 +15746,17 @@ Escoger \(\text{EPS}\) depende del rango de coordenadas de la escena y de la pre
 
 La esfera centrada en **c** con radio *r* está dada por
 
-\[
+<script type="math/tex; mode=display">
 \|\mathbf{p} - \mathbf{c}\|^{2}=r^{2}.
-\]
+</script>
 
 Al sustituir \(\mathbf{p}(t) = \mathbf{o}+t\mathbf{d}\) y reorganizar:
 
-\[
+<script type="math/tex; mode=display">
 \underbrace{\mathbf{d}\cdot\mathbf{d}}_{a}t^{2}
 +2\underbrace{\mathbf{d}\cdot(\mathbf{o}-\mathbf{c})}_{b/2}t
 +\underbrace{(\mathbf{o}-\mathbf{c})\cdot(\mathbf{o}-\mathbf{c})-r^{2}}_{c}=0.
-\]
+</script>
 
 En código:
 
@@ -15824,17 +15824,17 @@ int intersectRaySphere(const Vec3 *o, const Vec3 *d,
 
 Para ilustrar que el análisis del discriminante se repite en otras primitivas, consideremos un cilindro infinito de radio *r* centrado en el origen y alineado con el eje **Y**:
 
-\[
+<script type="math/tex; mode=display">
 x^{2}+z^{2}=r^{2}.
-\]
+</script>
 
 Al sustituir \(\mathbf{p}(t)=(o_x+td_x,\; o_y+td_y,\; o_z+td_z)\) obtenemos
 
-\[
+<script type="math/tex; mode=display">
 a = d_x^{2}+d_z^{2}, \quad
 b = 2(o_x d_x + o_z d_z), \quad
 c = o_x^{2}+o_z^{2} - r^{2}.
-\]
+</script>
 
 El mismo discriminante determina si el rayo atraviesa el cilindro, lo roza o lo evita. La diferencia práctica radica en que **a** puede ser cero (el rayo paralelo al eje); entonces la ecuación se reduce a lineal y el discriminante pierde sentido. Este caso se trata como una *excepción*:
 
@@ -15881,11 +15881,11 @@ int intersectRayInfiniteCylinder(const Vec3 *o, const Vec3 *d,
 
 En `t = (-b ± √Δ) / (2a)` la suma de dos números de magnitud similar y signo opuesto puede provocar cancelación significativa (pérdida de bits de precisión). Una técnica clásica consiste a **reformular** la ecuación:
 
-\[
+<script type="math/tex; mode=display">
 q = -\frac{1}{2}\bigl(b + \operatorname{sgn}(b)\sqrt{\Delta}\bigr), \quad
 t_{0} = q/a, \quad
 t_{1} = c/q.
-\]
+</script>
 
 Esto garantiza que el numerador siempre tenga el mismo signo que `b`, evitando la resta de dos números grandes.
 
@@ -15985,9 +15985,9 @@ Con estos principios, cualquier programador C que implemente ray‑casting estar
 
 En la mayor parte de los algoritmos de *ray‑casting* y *ray‑tracing* la ecuación  
 
-\[
+<script type="math/tex; mode=display">
 t = \frac{(p-O)\cdot N}{D\cdot N}
-\]
+</script>
 
 aparece como la piedra angular para determinar **el punto de intersección** entre un rayo y un plano infinito. A pesar de su aparente sencillez, el dominio de esta fórmula implica comprender geometría vectorial, la lógica de los sistemas de coordenadas en gráficos por computadora y, en la práctica, manejar casos degenerados que pueden colapsar la precisión numérica. En esta sección desglosaremos la ecuación paso a paso, ofreceremos un contexto histórico, presentaremos analogías intuitivas y proveeremos una implementación en C‑style robusta y comentada.
 
@@ -16007,15 +16007,15 @@ aparece como la piedra angular para determinar **el punto de intersección** ent
 
 El rayo está parametrizado por la ecuación lineal  
 
-\[
+<script type="math/tex; mode=display">
 R(t) = O + t\,D, \qquad t \ge 0
-\]
+</script>
 
 y el plano por su forma implícita  
 
-\[
+<script type="math/tex; mode=display">
 \Pi(x) = (x-p)\cdot N = 0,
-\]
+</script>
 
 donde el producto punto (`·`) simboliza la proyección escalar. El objetivo es encontrar el valor de `t` que satisface simultáneamente ambas ecuaciones, es decir, el punto `R(t)` que también pertenece al plano.
 
@@ -16023,23 +16023,23 @@ donde el producto punto (`·`) simboliza la proyección escalar. El objetivo es 
 
 1. Sustituimos la parametrización del rayo en la ecuación del plano:
 
-   \[
-   (O + tD - p) \cdot N = 0
-   \]
+   <script type="math/tex; mode=display">
+(O + tD - p) \cdot N = 0
+</script>
 
 2. Aplicamos la distributividad del producto punto:
 
-   \[
-   (O-p)\cdot N + t(D\cdot N) = 0
-   \]
+   <script type="math/tex; mode=display">
+(O-p)\cdot N + t(D\cdot N) = 0
+</script>
 
 3. Despejamos `t`:
 
-   \[
-   t(D\cdot N) = -(O-p)\cdot N
+   <script type="math/tex; mode=display">
+t(D\cdot N) = -(O-p)\cdot N
    \qquad\Longrightarrow\qquad
    t = \frac{(p-O)\cdot N}{D\cdot N}
-   \]
+</script>
 
 Observemos que el numerador `(p-O)·N` es la **distancia signed** (con signo) entre **O** y el plano medida a lo largo de la normal, mientras que el denominador `D·N` indica la **alineación** del rayo con esa normal. Si `D·N = 0`, el rayo es paralelo al plano y la ecuación no tiene solución o tiene infinitas soluciones (cuando también `(p-O)·N = 0`).  
 
@@ -16268,9 +16268,9 @@ int main(void)
 
 En la práctica, pocos objetos son planos infinitos. El algoritmo anterior sigue utilizándose como **prueba preliminar**: si el rayo intersecta el plano, se verifica luego si la coordenada local `(u, v)` del punto está dentro de los límites del rectángulo, esfera o cualquier primitiva. La transformación a espacio local (`world → plane`) se realiza mediante una base ortonormal: `U, V` (vectores tangentes al plano) y `N`. La proyección de `R(t)` sobre `U` y `V` da:
 
-\[
+<script type="math/tex; mode=display">
 u = (R(t) - p) \cdot U, \qquad v = (R(t) - p) \cdot V
-\]
+</script>
 
 Si `0 ≤ u ≤ w` y `0 ≤ v ≤ h` (ancho y alto del rectángulo) la intersección es válida.
 
@@ -16282,9 +16282,9 @@ Los motores modernos utilizan **Bounding Volume Hierarchies (BVH)** o **Octrees*
 
 Una vez obtenida la intersección, el nuevo rayo reflejado se calcula mediante la ley de reflexión:
 
-\[
+<script type="math/tex; mode=display">
 D_{\text{ref}} = D - 2 (D\cdot N) N
-\]
+</script>
 
 y la refracción mediante la fórmula de Snell. En ambos casos la normal `N` viene directamente del plano, por lo que la exactitud de `t` afecta a la continuidad visual de la reflexión/refracción.
 
@@ -16334,9 +16334,9 @@ Cada uno de estos pasos está respaldado por fundamentos geométricos y su imple
 
 La ecuación  
 
-\[
+<script type="math/tex; mode=display">
 t = \frac{(p-O)\cdot N}{D\cdot N}
-\]
+</script>
 
 es mucho más que una simple operación algebraica; es la **clave de acceso** que permite a cualquier motor de ray‑casting o ray‑tracing determinar de forma determinista y de bajo costo la interacción entre un rayo y una superficie planar.  
 Su derivación, basada en la sustitución directa de la parametrización del rayo en la forma implícita del plano, muestra la elegancia de la geometría vectorial: el numerador captura la distancia signed a lo largo de la normal, y el denominador mide la alineación del rayo con esa misma dirección.  
@@ -16363,9 +16363,9 @@ A continuación se analizan los conceptos subyacentes, se revisan las soluciones
 
 Un rayo se describe mediante una ecuación paramétrica:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}(t)=\mathbf{o}+t\,\mathbf{d},\qquad t\ge 0
-\]
+</script>
 
 donde `o` es el **origen** (posición del observador o del punto de emisión) y `d` es la **dirección** normalizada. El parámetro `t` representa la distancia escalar a lo largo del rayo.
 
@@ -16382,17 +16382,17 @@ Los límites son *cerrados* en `min` y *abiertos* en `max` para evitar solapamie
 
 El método de *slab* (Kay & Kay, 1982) sigue siendo la referencia de facto. Cada eje define un *slab* (intervalo) y la intersección del rayo con una celda es el intervalo de `t` que queda dentro de los tres slabs simultáneamente:
 
-\[
+<script type="math/tex; mode=display">
 t_{x}^{\text{enter}} = \frac{x_{\min} - o_x}{d_x},\qquad
 t_{x}^{\text{exit}}  = \frac{x_{\max} - o_x}{d_x}
-\]
+</script>
 
 y análogamente para `y` y `z`. Los valores pueden invertirse si `d_i < 0`. El intervalo total de validez es:
 
-\[
+<script type="math/tex; mode=display">
 t_{\text{enter}} = \max(t_{x}^{\text{enter}},t_{y}^{\text{enter}},t_{z}^{\text{enter}})\\
 t_{\text{exit}}  = \min(t_{x}^{\text{exit}}, t_{y}^{\text{exit}}, t_{z}^{\text{exit}})
-\]
+</script>
 
 Si `t_enter ≤ t_exit` y `t_exit ≥ 0`, el rayo cruza la celda.  
 
@@ -16716,9 +16716,9 @@ A continuación se analiza exhaustivamente la diferencia entre los dos esquemas 
 En un arreglo bidimensional `A[M][N]` declarado en C, el compilador **guarda consecutivamente** los elementos de **cada fila** antes de pasar a la siguiente.  
 El mapeo lineal del índice `(i, j)` (fila *i*, columna *j*) a una posición lineal `p` es:
 
-\[
+<script type="math/tex; mode=display">
 p = i \times N + j \qquad (0 \le i < M,\;0 \le j < N)
-\]
+</script>
 
 Donde `N` es el número de columnas. El “stride” (paso) entre dos filas adyacentes es `N` elementos.
 
@@ -16726,9 +16726,9 @@ Donde `N` es el número de columnas. El “stride” (paso) entre dos filas adya
 
 En este caso, los elementos de **cada columna** se almacenan de forma contigua, y solo entonces se avanza a la columna siguiente. El mapeo es:
 
-\[
+<script type="math/tex; mode=display">
 p = j \times M + i
-\]
+</script>
 
 Aquí el stride entre dos columnas adyacentes es `M` elementos (el número de filas).
 
@@ -17039,9 +17039,9 @@ Supongamos una grilla tridimensional con dimensiones:
 
 Para una coordenada discreta `(x, y, z)` con `0 ≤ x < dimX`, `0 ≤ y < dimY`, `0 ≤ z < dimZ`, el índice lineal `i` en un **row‑major** (X cambia más rápido) se define como:
 
-\[
+<script type="math/tex; mode=display">
 i = (z \cdot dimY + y) \cdot dimX + x
-\]
+</script>
 
 ### 3.1 Inversión (de índice a coordenadas)
 
@@ -17546,9 +17546,9 @@ En 1987 John Amanatides y Andrew Woo publicaron el artículo **“A Fast Voxel T
 
 En 2‑D usamos la forma paramétrica:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}(t)=\mathbf{o}+t\mathbf{d}, \qquad t\ge 0
-\]
+</script>
 
 - **\(\mathbf{o} = (o_x, o_y)\)**: origen del rayo (por ejemplo, la posición del jugador).
 - **\mathbf{d} = (d_x, d_y)\)**: dirección normalizada (o no) del rayo.
@@ -17558,9 +17558,9 @@ En 2‑D usamos la forma paramétrica:
 
 Supongamos una cuadrícula ortogonal de celdas de tamaño **Δ = 1** (es decir, cada celda corresponde a un entero en los ejes X e Y). Cada celda se identifica por sus índices **(i, j)** donde:
 
-\[
+<script type="math/tex; mode=display">
 i = \lfloor x \rfloor,\qquad j = \lfloor y \rfloor
-\]
+</script>
 
 El algoritmo necesita saber, a partir del origen, cuál es la celda inicial y a qué distancia (en t) alcanzará la **próxima frontera vertical** y la **próxima frontera horizontal**.
 
@@ -17581,9 +17581,9 @@ int stepY = (dy > 0) ? 1 : -1;
 
 Sea `x0` la coordenada X del origen. Si `dx > 0` la primera frontera vertical está en **x = floor(x0) + 1**, de lo contrario en **x = floor(x0)** (porque nos movemos hacia la izquierda). La distancia del origen a esa frontera, medida en “t”, se obtiene dividiendo la diferencia de coordenadas por la componente de la dirección:
 
-\[
+<script type="math/tex; mode=display">
 t_{\text{max}X}= \frac{x_{\text{border}} - o_x}{d_x}
-\]
+</script>
 
 Para evitar división por cero cuando `dx == 0` se usa un valor infinito (`FLT_MAX`). Lo mismo para `tMaxY`.
 
@@ -17591,10 +17591,10 @@ Para evitar división por cero cuando `dx == 0` se usa un valor infinito (`FLT_M
 
 Una vez cruzada una frontera vertical, la siguiente se encuentra siempre a una distancia de **Δ / |dx|** en términos de t. Como Δ = 1, simplificamos:
 
-\[
+<script type="math/tex; mode=display">
 t_{\Delta X}= \frac{1}{|d_x|},\qquad
 t_{\Delta Y}= \frac{1}{|d_y|}
-\]
+</script>
 
 Estos valores son constantes a lo largo del recorrido y permiten actualizar `tMaxX`/`tMaxY` de forma incremental.
 
@@ -17852,9 +17852,9 @@ El algoritmo más difundido es el **DDA** (Digital Differential Analyzer). La id
 
 Un rayo en 2D se describe paramétricamente:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{p}(t) = \begin{bmatrix} posX \\ posY \end{bmatrix} + t \cdot \begin{bmatrix} dirX \\ dirY \end{bmatrix}, \qquad t \ge 0
-\]
+</script>
 
 En una malla de celdas unitarias, la **próxima frontera vertical** ocurre cuando la coordenada `x` del punto alcanza un entero (`k`). De forma similar, la **próxima frontera horizontal** ocurre cuando `y` alcanza un entero.
 
@@ -17869,27 +17869,27 @@ El mismo razonamiento vale para `y`.
 
 Para hallar cuánto `t` transcurre entre dos fronteras verticales consecutivas (una celda completa en `x`), despejamos `t` de la ecuación \(x(t) = k\):
 
-\[
+<script type="math/tex; mode=display">
 t = \frac{k - posX}{dirX}
-\]
+</script>
 
 Entre dos fronteras verticales consecutivas la diferencia de `k` es exactamente `1`. Por tanto, el **incremento de `t`** necesario para pasar de una frontera a la siguiente es:
 
-\[
+<script type="math/tex; mode=display">
 \Delta t_{x} = \frac{1}{|dirX|}
-\]
+</script>
 
 `deltaX` es, en la práctica, la distancia euclídea recorrida a lo largo del rayo para que el componente `x` cambie una unidad de celda. Dado que el rayo avanza en la dirección `(dirX, dirY)`, la distancia real recorrida entre dos fronteras verticales se obtiene multiplicando `Δtₓ` por la longitud del vector dirección (que vale 1). Entonces:
 
-\[
+<script type="math/tex; mode=display">
 \boxed{deltaX = \frac{1}{|dirX|}}
-\]
+</script>
 
 Análogamente para el eje `y`:
 
-\[
+<script type="math/tex; mode=display">
 \boxed{deltaY = \frac{1}{|dirY|}}
-\]
+</script>
 
 **Importante**: cuando `dirX` o `dirY` son muy pequeños (rayos casi paralelos al eje), `deltaX` o `deltaY` pueden crecer mucho, lo que implica que el algoritmo hará muchos saltos en el otro eje antes de cruzar la frontera del eje casi paralelo. Es una característica deseada: el rayo "dibuja" la celda de forma robusta sin perder precisión.
 
@@ -17930,15 +17930,15 @@ El cálculo difiere según el signo de la componente:
 
 - **Caso `dirX > 0`**  
   La próxima frontera vertical está en `x = mapX + 1`. La distancia desde `posX` hasta esa frontera es:  
-  \[
-  sideDistX = (mapX + 1.0 - posX) \times deltaX
-  \]
+  <script type="math/tex; mode=display">
+sideDistX = (mapX + 1.0 - posX) \times deltaX
+</script>
 
 - **Caso `dirX < 0`**  
   La frontera está en `x = mapX`. La distancia es:  
-  \[
-  sideDistX = (posX - mapX) \times deltaX
-  \]
+  <script type="math/tex; mode=display">
+sideDistX = (posX - mapX) \times deltaX
+</script>
 
 Los mismos razonamientos se aplican a `sideDistY`.
 
@@ -18543,9 +18543,9 @@ Ventajas frente a un bucle *pixel‑por‑pixel*:
 
 Imaginemos al jugador en el origen del plano XY, mirando hacia el **eje X positivo**. Sobre su cabeza dibujamos un plano vertical (el *screen plane*) a distancia `projDist` del observador. Cada columna `xScreen` del plano corresponde a una dirección de rayo `rayDir` calculada como:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{rayDir} = \mathbf{dir} + \mathbf{plane} \times \frac{2x_{\text{screen}}}{\text{width}} - 1
-\]
+</script>
 
 - `dir` es el vector de dirección de visión (unitario).  
 - `plane` es un vector perpendicular a `dir`, cuya longitud define el **campo de visión (FOV)**.  
@@ -18559,9 +18559,9 @@ Para determinar dónde golpea el rayo con la pared del mapa usamos el algoritmo 
 
 Si simplemente usamos la distancia euclídea `perpWallDist` que obtuvimos con DDA, los muros que estén a la izquierda o derecha del centro parecieran curvarse (efecto “fisheye”). La corrección se logra multiplicando por el coseno del ángulo entre el rayo y la dirección de visión:
 
-\[
+<script type="math/tex; mode=display">
 \text{perpWallDistCorrecta} = \text{perpWallDist} \times \cos(\theta)
-\]
+</script>
 
 En la práctica, la corrección se reduce a dividir por el **producto punto** entre `rayDir` y `dir`:
 
@@ -20085,24 +20085,24 @@ donde:
 
 Sea `θ` el **ángulo total del FOV** (en radianes). El plano debe tener una longitud tal que los rayos extremos formen un ángulo `θ/2` con la dirección central. Como `plane` es perpendicular a `dir`, su módulo `|plane|` cumple:
 
-\[
+<script type="math/tex; mode=display">
 \tan\left(\frac{\theta}{2}\right) = \frac{|plane|}{|dir|}\quad\Longrightarrow\quad |plane| = \tan\!\left(\frac{\theta}{2}\right)
-\]
+</script>
 
 En la práctica `|dir| = 1` (vector normalizado), por lo que:
 
-\[
+<script type="math/tex; mode=display">
 |plane| = \tan\!\left(\frac{\theta}{2}\right)
-\]
+</script>
 
 El vector `plane` se construye rotando `dir` 90° y escalándolo a esa magnitud:
 
-\[
+<script type="math/tex; mode=display">
 \begin{aligned}
 planeX &= -dirY \times \tan\!\left(\frac{\theta}{2}\right)\\
 planeY &=  dirX \times \tan\!\left(\frac{\theta}{2}\right)
 \end{aligned}
-\]
+</script>
 
 Esta fórmula garantiza que:
 
@@ -20667,10 +20667,10 @@ El mapeo consiste, esencialmente, en pasar de **Pixel Space → NDC → View Spa
 
 Para una imagen de anchura `W` y altura `H`, el centro del píxel `(i, j)` (con `i ∈ [0, W‑1]`, `j ∈ [0, H‑1]`) se lleva a coordenadas normalizadas:
 
-\[
+<script type="math/tex; mode=display">
 x_{\text{ndc}} = \frac{2(i + 0.5)}{W} - 1,\qquad
 y_{\text{ndc}} = 1 - \frac{2(j + 0.5)}{H}
-\]
+</script>
 
 *Nota*: el término `+0.5` asegura que el punto corresponda al **centro** del píxel, lo cual es crucial para evitar desplazamientos de medio píxel que se traducen en jitter al suavizar la imagen.
 
@@ -20678,25 +20678,25 @@ y_{\text{ndc}} = 1 - \frac{2(j + 0.5)}{H}
 
 En la cámara perspectiva, el plano de imagen está a una distancia focal `f` del origen (el ojo). La relación entre el ángulo de campo de visión vertical `fovY` y `f` es:
 
-\[
+<script type="math/tex; mode=display">
 f = \frac{H_{\text{plane}}}{2\tan(\tfrac{fovY}{2})}
-\]
+</script>
 
 donde `H_plane` es la altura del plano de imagen. Normalmente, se fija `f = 1` y se escala el plano según `fovY`. Sin embargo, para mayor claridad se mantiene la distancia focal explícita.
 
 El ancho del plano (`W_plane`) se determina mediante la razón de aspecto `aspect = W / H`:
 
-\[
+<script type="math/tex; mode=display">
 W_{\text{plane}} = H_{\text{plane}} \times aspect
-\]
+</script>
 
 Con `x_ndc` y `y_ndc` podemos obtener la posición en el plano:
 
-\[
+<script type="math/tex; mode=display">
 x_{\text{plane}} = x_{\text{ndc}} \times \frac{W_{\text{plane}}}{2},\qquad
 y_{\text{plane}} = y_{\text{ndc}} \times \frac{H_{\text{plane}}}{2},\qquad
 z_{\text{plane}} = -f
-\]
+</script>
 
 Obsérvese que `z` es negativo porque la cámara mira en la dirección **-Z** en el sistema de vista clásico (OpenGL). Para un modelo **ortográfico**, el factor de escala por `tan(fovY/2)` desaparece y `z` se fija a un valor constante (por ejemplo, 0), pero el proceso de cálculo de `x_plane` y `y_plane` sigue siendo idéntico.
 
@@ -20706,20 +20706,20 @@ Obsérvese que `z` es negativo porque la cámara mira en la dirección **-Z** en
 
 Una vez que conocemos el punto `P = (x_plane, y_plane, z_plane)` en espacio de vista, el rayo primario se forma a partir de la posición del ojo `E` (usualmente el origen `(0,0,0)` en view space) y la dirección hacia `P`:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{d} = \frac{P - E}{\|P - E\|}
-\]
+</script>
 
 En muchos casos se omite la normalización y se pasa `P` directamente a los algoritmos de intersección, pues la comparación de t‑valores sigue siendo válida cuando se realiza una única escala. Sin embargo, normalizar la dirección mejora la estabilidad numérica y permite un manejo coherente de luces y normales.
 
 Para transformar el rayo al **world space**, se aplica la matriz de vista inversa (que lleva de view a world). Si la cámara está en posición `C` y orientada mediante los vectores ortonormales `u` (right), `v` (up) y `w` (backward), la transformación es:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{d}_{\text{world}} = \mathbf{u}\,x_{\text{plane}} + \mathbf{v}\,y_{\text{plane}} - \mathbf{w}\,f
-\]
-\[
+</script>
+<script type="math/tex; mode=display">
 \mathbf{o}_{\text{world}} = C
-\]
+</script>
 
 Este procedimiento permite evitar una matriz 4×4 completa y es más eficiente en C puro.
 
@@ -20959,10 +20959,10 @@ Estos ocho valores definen la relación entre **espacio de pantalla** (coordenad
 
 Los píxeles se expresan en **coordenadas de dispositivo normalizado** (NDC, *Normalized Device Coordinates*) que van de `[-1, 1]` en X y Y:
 
-\[
+<script type="math/tex; mode=display">
 x_{ndc} = \frac{(i + 0.5)}{w}\, 2 - 1,\qquad
 y_{ndc} = 1 - \frac{(j + 0.5)}{h}\, 2
-\]
+</script>
 
 * `i, j` son índices de columna y fila (0‑based).  
 * `w, h` son ancho y alto de la ventana.  
@@ -20971,21 +20971,21 @@ y_{ndc} = 1 - \frac{(j + 0.5)}{h}\, 2
 #### 2.2.2. Plano de imagen en coordenadas de cámara
 
 - **Perspectiva**  
-  \[
-  \begin{aligned}
+  <script type="math/tex; mode=display">
+\begin{aligned}
   y_{cam} &= \tan\!\left(\frac{fovY}{2}\right) \cdot y_{ndc} \cdot 2 \\
   x_{cam} &= y_{cam} \cdot aspect
   \end{aligned}
-  \]
+</script>
   El punto en el plano de imagen está a una distancia `z = -1` (en coordenadas de cámara) y sus coordenadas son `(x_cam, y_cam, -1)`.
 
 - **Ortográfica**  
-  \[
-  \begin{aligned}
+  <script type="math/tex; mode=display">
+\begin{aligned}
   y_{cam} &= y_{ndc} \cdot orthoScale \\
   x_{cam} &= x_{ndc} \cdot orthoScale \cdot aspect
   \end{aligned}
-  \]
+</script>
   El plano está a una distancia arbitraria (usualmente `z = -nearPlane`) y la dirección del rayo es constante: `forward`.
 
 ### 2.3. Construcción del rayo primario
@@ -21211,9 +21211,9 @@ La generación de rayos dentro del bucle de rasterizado constituye el **esquelet
 
 En los algoritmos de **ray‑casting** el paso fundamental es averiguar si un rayo que parte de un punto origen **O** y se extiende en una dirección normalizada **d** intersecta algún elemento geométrico del mundo virtual. El proceso se denomina *intersección directa*: se evalúa la ecuación paramétrica del rayo  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}(t)=\mathbf{O}+t\;\mathbf{d},\qquad t\ge 0
-\]
+</script>
 
 y se busca un valor escalar \(t\) que satisfaga simultáneamente la ecuación implícita del primitive (plano, esfera, triángulo, etc.).  
 
@@ -21235,17 +21235,17 @@ El estudio formal de la paralelidad proviene de la teoría de **geometría proye
 
 Un plano se describe por una normal \(\mathbf{n}\) y una distancia al origen \(d\) (en la forma implícita \(\mathbf{n}\cdot\mathbf{p}=d\)). Reemplazando \(\mathbf{p}=\mathbf{r}(t)\) en esa ecuación:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{n}\cdot(\mathbf{O}+t\mathbf{d}) = d \Longrightarrow
 \underbrace{\mathbf{n}\cdot\mathbf{d}}_{\text{denominador}}\,t =
 d-\mathbf{n}\cdot\mathbf{O}
-\]
+</script>
 
 De aquí
 
-\[
+<script type="math/tex; mode=display">
 t = \frac{d-\mathbf{n}\cdot\mathbf{O}}{\mathbf{n}\cdot\mathbf{d}}.
-\]
+</script>
 
 La intersección es válida si \(t\ge 0\) (el plano está delante del origen) **y** el denominador no es nulo. El caso denominador ≈ 0 corresponde a un rayo **paralelo al plano**.
 
@@ -21266,27 +21266,27 @@ Si \(|\mathbf{n}\cdot\mathbf{d}| < \varepsilon\) (con \(\varepsilon\) del orden 
 
 Una esfera de centro \(\mathbf{C}\) y radio \(R\) cumple \(\|\mathbf{p}-\mathbf{C}\|^{2}=R^{2}\). Sustituyendo \(\mathbf{p}=\mathbf{O}+t\mathbf{d}\):
 
-\[
+<script type="math/tex; mode=display">
 \|\mathbf{O}+t\mathbf{d}-\mathbf{C}\|^{2}=R^{2}.
-\]
+</script>
 
 Expandiendo:
 
-\[
+<script type="math/tex; mode=display">
 (\mathbf{d}\cdot\mathbf{d})t^{2}+2\mathbf{d}\cdot(\mathbf{O}-\mathbf{C})t+\|\mathbf{O}-\mathbf{C}\|^{2}-R^{2}=0.
-\]
+</script>
 
 Con \(\|\mathbf{d}\|=1\) la ecuación queda:
 
-\[
+<script type="math/tex; mode=display">
 t^{2}+2\;b\,t + c = 0,
-\]
+</script>
 donde  
 
-\[
+<script type="math/tex; mode=display">
 b = \mathbf{d}\cdot(\mathbf{O}-\mathbf{C}),\qquad
 c = \|\mathbf{O}-\mathbf{C}\|^{2}-R^{2}.
-\]
+</script>
 
 El discriminante \(\Delta = b^{2}-c\) determina la existencia de solución:
 
@@ -21522,32 +21522,32 @@ A continuación se desglosa el algoritmo paso a paso, se discuten sus fundamento
 
 Un triángulo en el espacio 3‑D se define por tres vértices:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{V}_0,\ \mathbf{V}_1,\ \mathbf{V}_2 \in \mathbb{R}^3
-\]
+</script>
 
 Cualquier punto \(\mathbf{P}\) del triángulo puede describirse mediante coordenadas baricéntricas \((u,v,w)\) con \(u+v+w=1\) y \(u,v,w\ge 0\).  En forma práctica:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{P}(u,v) = \mathbf{V}_0 + u\,\mathbf{e}_1 + v\,\mathbf{e}_2,\qquad
 \mathbf{e}_1 = \mathbf{V}_1-\mathbf{V}_0,\ \mathbf{e}_2 = \mathbf{V}_2-\mathbf{V}_0
-\]
+</script>
 
 Un rayo se expresa como:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{R}(t) = \mathbf{O} + t\,\mathbf{D}, \qquad t \ge 0
-\]
+</script>
 
 donde \(\mathbf{O}\) es el origen y \(\mathbf{D}\) la dirección (normalizada o no, el algoritmo funciona igualmente).  La intersección se reduce a resolver:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{O} + t\mathbf{D} = \mathbf{V}_0 + u\mathbf{e}_1 + v\mathbf{e}_2
-\]
+</script>
 
 con la restricción de que \(u\ge0,\; v\ge0,\; u+v \le 1\) y \(t\ge0\).  El problema es lineal en \((t,u,v)\) y se puede escribir como un sistema de tres ecuaciones:
 
-\[
+<script type="math/tex; mode=display">
 \begin{bmatrix}
 -\mathbf{D} & \mathbf{e}_1 & \mathbf{e}_2
 \end{bmatrix}
@@ -21556,7 +21556,7 @@ t\\ u\\ v
 \end{bmatrix}
 =
 \mathbf{O}-\mathbf{V}_0
-\]
+</script>
 
 El algoritmo de Möller‑Trumbore resuelve este sistema mediante **el método de Cramer**, evitando la construcción explícita de la matriz inversa.
 
@@ -21566,67 +21566,67 @@ El algoritmo de Möller‑Trumbore resuelve este sistema mediante **el método d
 
 ### 2.1. Producto cruzado del rayo y la segunda arista
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{P} = \mathbf{D} \times \mathbf{e}_2
-\]
+</script>
 
 El vector \(\mathbf{P}\) es perpendicular a \(\mathbf{D}\) y \(\mathbf{e}_2\).  Su longitud es proporcional al área del paralelogramo formado por esos vectores y, por tanto, al **determinante** del sistema lineal.
 
 ### 2.2. Determinante (denominador)
 
-\[
+<script type="math/tex; mode=display">
 \text{det} = \mathbf{e}_1 \cdot \mathbf{P}
-\]
+</script>
 
 Si \(|\text{det}| < \epsilon\) (con \(\epsilon\) una constante de tolerancia), el rayo es **casi paralelo** al plano del triángulo y se descarta la intersección.  En la variante *culling* se verifica además el signo de `det` para aceptar únicamente triángulos frontales (normales que miren contra la dirección del rayo).
 
 ### 2.3. Inverso del determinante
 
-\[
+<script type="math/tex; mode=display">
 \text{invDet} = \frac{1}{\text{det}}
-\]
+</script>
 
 Multiplicar por \(\text{invDet}\) al final evita dos divisiones y mejora el pipeline de la CPU.
 
 ### 2.4. Vector desde V0 hasta el origen del rayo
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{T} = \mathbf{O} - \mathbf{V}_0
-\]
+</script>
 
 ### 2.5. Coordenada baricéntrica **u**
 
-\[
+<script type="math/tex; mode=display">
 u = (\mathbf{T} \cdot \mathbf{P}) \times \text{invDet}
-\]
+</script>
 
 Si \(u < 0\) o \(u > 1\) el punto de intersección cae fuera del triángulo.
 
 ### 2.6. Producto cruzado de T y e1 (para v)
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{Q} = \mathbf{T} \times \mathbf{e}_1
-\]
+</script>
 
 ### 2.7. Coordenada baricéntrica **v**
 
-\[
+<script type="math/tex; mode=display">
 v = (\mathbf{D} \cdot \mathbf{Q}) \times \text{invDet}
-\]
+</script>
 
 Rechazamos nuevamente si \(v < 0\) o \(u+v > 1\).
 
 ### 2.8. Parámetro de distancia **t**
 
-\[
+<script type="math/tex; mode=display">
 t = (\mathbf{e}_2 \cdot \mathbf{Q}) \times \text{invDet}
-\]
+</script>
 
 Finalmente, si \(t > \epsilon\) (para evitar intersecciones “detrás” del origen) el rayo golpea el triángulo en:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{P}_{\text{hit}} = \mathbf{O} + t\mathbf{D}
-\]
+</script>
 
 ---  
 
@@ -21916,9 +21916,9 @@ A continuación se desglosa el origen matemático de estas variables, su interpr
 
 Un rayo se representa habitualmente como  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{R}(t) = \mathbf{O} + t\mathbf{D},\qquad t \ge 0
-\]
+</script>
 
 donde  
 
@@ -21928,17 +21928,17 @@ donde
 
 Un triángulo está definido por tres vértices `V0`, `V1`, `V2`.  Si trazamos los vectores de borde  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{E}_1 = \mathbf{V}_1 - \mathbf{V}_0,\qquad
 \mathbf{E}_2 = \mathbf{V}_2 - \mathbf{V}_0
-\]
+</script>
 
 cualquier punto del plano del triángulo puede expresarse mediante **coordenadas baricéntricas**  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{P} = \mathbf{V}_0 + u\mathbf{E}_1 + v\mathbf{E}_2,
 \qquad u, v \in \mathbb{R}.
-\]
+</script>
 
 Cuando `(u, v)` cumplen `u ≥ 0`, `v ≥ 0` y `u + v ≤ 1`, el punto está dentro del triángulo; si alguna de esas desigualdades se viola, está fuera.
 
@@ -21946,19 +21946,19 @@ Cuando `(u, v)` cumplen `u ≥ 0`, `v ≥ 0` y `u + v ≤ 1`, el punto está den
 
 Para encontrar la intersección queremos un punto que sea simultáneamente del rayo y del plano del triángulo:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{O} + t\mathbf{D} = \mathbf{V}_0 + u\mathbf{E}_1 + v\mathbf{E}_2.
-\]
+</script>
 
 Reordenando,
 
-\[
+<script type="math/tex; mode=display">
 t\mathbf{D} = \mathbf{V}_0 - \mathbf{O} + u\mathbf{E}_1 + v\mathbf{E}_2.
-\]
+</script>
 
 Detectar `t`, `u` y `v` equivale a resolver un **sistema lineal** de tres ecuaciones con tres incógnitas.  En su forma matricial:
 
-\[
+<script type="math/tex; mode=display">
 \begin{bmatrix}
 -\mathbf{D} & \mathbf{E}_1 & \mathbf{E}_2
 \end{bmatrix}
@@ -21967,7 +21967,7 @@ t \\ u \\ v
 \end{bmatrix}
 =
 \mathbf{O} - \mathbf{V}_0.
-\]
+</script>
 
 La solución directa mediante inversión de matriz resulta costosa y numericamente inestable.  En 1997, **Möller y Trumbore** propusieron una variante de Cramer que evita la inversión y reduce la complejidad a 7 multiplicaciones y 13 sumas por intersección, convirtiéndose en la referencia de facto para todas las implementaciones en tiempo real.
 
@@ -21979,15 +21979,15 @@ La solución directa mediante inversión de matriz resulta costosa y numericamen
 
 Sea  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{P} = \mathbf{D} \times \mathbf{E}_2.
-\]
+</script>
 
 El **producto cruzado** `P` es perpendicular a `D` y `E2`.  Su producto escalar con `E1` da el determinante del sistema:
 
-\[
+<script type="math/tex; mode=display">
 \text{det} = \mathbf{E}_1 \cdot \mathbf{P}.
-\]
+</script>
 
 Si `det` se acerca a cero, los vectores `D`, `E1` y `E2` son coplanares → el rayo es paralelo al plano del triángulo y no hay intersección **significativa**.
 
@@ -22003,15 +22003,15 @@ float invDet = 1.0f / det;
 
 Definimos  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{T} = \mathbf{O} - \mathbf{V}_0.
-\]
+</script>
 
 Entonces  
 
-\[
+<script type="math/tex; mode=display">
 u = (\mathbf{T} \cdot \mathbf{P}) \, \text{invDet}.
-\]
+</script>
 
 Si `u` está fuera del rango `[0,1]` el punto de intersección queda fuera del triángulo y el algoritmo termina.
 
@@ -22019,15 +22019,15 @@ Si `u` está fuera del rango `[0,1]` el punto de intersección queda fuera del t
 
 Calculamos otro vector cruzado  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{Q} = \mathbf{T} \times \mathbf{E}_1,
-\]
+</script>
 
 y a continuación  
 
-\[
+<script type="math/tex; mode=display">
 v = (\mathbf{D} \cdot \mathbf{Q}) \, \text{invDet}.
-\]
+</script>
 
 Al igual que con `u`, la condición `v < 0` o `u + v > 1` descarta la intersección.
 
@@ -22035,9 +22035,9 @@ Al igual que con `u`, la condición `v < 0` o `u + v > 1` descarta la intersecci
 
 Finalmente, la distancia a lo largo del rayo es  
 
-\[
+<script type="math/tex; mode=display">
 t = (\mathbf{E}_2 \cdot \mathbf{Q}) \, \text{invDet}.
-\]
+</script>
 
 Si `t` es negativo, la intersección ocurre “detrás” del origen del rayo y también se rechaza.
 
@@ -22166,9 +22166,9 @@ bool ray_intersect_triangle(const Ray *ray,
 
 Una vez que se ha obtenido `u` y `v`, el tercer peso baricéntrico (`w`) se deduce como  
 
-\[
+<script type="math/tex; mode=display">
 w = 1 - u - v.
-\]
+</script>
 
 Estos tres pesos suman 1 y pueden usarse para **interpolar atributos** (normales, coordenadas de textura, colores, etc.) en el punto de impacto:
 
@@ -22246,15 +22246,15 @@ A continuación se exponen los fundamentos teóricos, el contexto histórico, la
 
 En un motor de ray‑casting con cámara en posición `player.x, player.y` y ángulo de visión `θ₀`, el campo de visión total (FOV) se reparte entre `SCREEN_WIDTH` columnas. El ángulo que corresponde a la columna `x` es:
 
-\[
+<script type="math/tex; mode=display">
 \theta(x) = \theta_0 - \frac{\text{FOV}}{2} + x \cdot \frac{\text{FOV}}{\text{SCREEN\_WIDTH}}.
-\]
+</script>
 
 El vector de dirección unitario (e‑vector) asociado es:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{e}(x) = (\cos\theta(x),\; \sin\theta(x)).
-\]
+</script>
 
 Calcular `cos` y `sin` para cada `x` implica dos llamadas a funciones trigonométricas *por* píxel, es decir, `2 × SCREEN_WIDTH` evaluaciones por frame. En una resolución típica de 320 × 200 (como la del clásico *Wolfenstein 3D*), el número asciende a **640** llamadas por frame; a 60 fps esto supera los 38 000 cálculos por segundo, lo que en hardware de los años 90 provocaba cuellos de botella notables.
 
@@ -22644,18 +22644,18 @@ A mediados de los años 90 surgieron estructuras como **BVH (Bounding Volume Hie
 
 Sea el rayo:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}(t) = \mathbf{o} + t\,\mathbf{d}, \quad t \ge 0
-\]
+</script>
 
 donde **o** es el origen y **d** la dirección (normalizada o no, no importa para la prueba).
 
 Para cada eje *i* ∈ {x, y, z} calculamos los valores de *t* en los que el rayo cruza los dos planos de la slab:
 
-\[
+<script type="math/tex; mode=display">
 t_{i}^{\text{min}} = \frac{(b_i^{\text{min}} - o_i)}{d_i}, \qquad
 t_{i}^{\text{max}} = \frac{(b_i^{\text{max}} - o_i)}{d_i}
-\]
+</script>
 
 Si *d_i* = 0, el rayo es paralelo al plano; entonces:
 
@@ -23296,9 +23296,9 @@ El modelo fue concebido como una **aproximación empírica** a la reflexión de 
 
 El aporte fundamental de Phong es la **suma de tres lóbulos**:
 
-\[
+<script type="math/tex; mode=display">
 I = I_{\text{ambient}} + I_{\text{diffuse}} + I_{\text{specular}}
-\]
+</script>
 
 Cada término se calcula de forma independiente y se combina linealmente. A continuación se detalla cada uno.
 
@@ -23319,9 +23319,9 @@ No depende de la geometría ni de la posición del observador.
 
 Basada en la ley de Lambert, describe la reflexión **macroscópica** sobre superficies rugosas a escala microscópica. El flujo incidente es proporcional al **coseno** del ángulo entre la normal `N` y la dirección de la luz `L` (vector unitario que apunta **desde** el punto hacia la fuente).  
 
-\[
+<script type="math/tex; mode=display">
 I_{\text{diffuse}} = k_d \; (\max(0, N \cdot L)) \; I_{\text{light}}
-\]
+</script>
 
 - `k_d` : coeficiente difuso del material.
 - `I_light` : intensidad/color de la fuente.
@@ -23332,9 +23332,9 @@ El `max` garantiza que la luz que incide por detrás no contribuya.
 
 Es la rama que da al modelo su nombre y la sensación de **brillo**. Phong postuló que la luz especular se comporta como una *luz concentrada* alrededor de la **dirección de reflexión** `R`. La intensidad decrece según un **exponente de brillo** `α` (shininess), que controla la “difusión” del punto de brillo.
 
-\[
+<script type="math/tex; mode=display">
 I_{\text{specular}} = k_s \; (\max(0, R \cdot V)^{\alpha}) \; I_{\text{light}}
-\]
+</script>
 
 Donde:
 
@@ -23342,9 +23342,9 @@ Donde:
 - `V` : vector unitario que apunta **desde** el punto hacia el observador (camera ray direction invertida).
 - `R` : reflexión de `L` respecto a la normal `N`:
 
-\[
+<script type="math/tex; mode=display">
 R = 2(N \cdot L)N - L
-\]
+</script>
 
 El término `R·V` mide cuán alineado está el observador con la dirección de reflexión. Si el ángulo es pequeño, el valor se acerca a 1 y el brillo es máximo; a medida que se aleja, la potencia `α` hace que el término decaiga exponencialmente.
 
@@ -23577,9 +23577,9 @@ Para proyectos académicos o prototipos, esta falta de realismo es aceptable a c
 
 En vez de reflejar la luz y comparar con `V`, se introduce el **half‑vector** `H = normalize(L + V)`. El término especular se vuelve:
 
-\[
+<script type="math/tex; mode=display">
 I_{\text{specular}} = k_s \; (\max(0, N \cdot H)^{\alpha}) \; I_{\text{light}}
-\]
+</script>
 
 Ventajas:
 
@@ -23602,9 +23602,9 @@ Para añadir sombras sin implementar un árbol de aceleración, basta con lanzar
 
 En la vida real, la intensidad de una fuente puntual decae con la distancia `d`. Se introduce:
 
-\[
+<script type="math/tex; mode=display">
 I_{\text{light}}(d) = \frac{I_0}{a + b d + c d^2}
-\]
+</script>
 
 Donde `a,b,c` son constantes de atenuación. En código:
 
@@ -23677,45 +23677,45 @@ Los primeros motores de ray‑tracing de la década de 1980 (p.ej. *Whitted* 198
 
 Un rayo se define como  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}(t) = \mathbf{o} + t\mathbf{d},\qquad t\ge 0
-\]
+</script>
 
 donde **o** es el origen y **d** la dirección normalizada.  
 Una esfera con centro **c** y radio **R** contiene los puntos **p** que satisfacen  
 
-\[
+<script type="math/tex; mode=display">
 \|\mathbf{p} - \mathbf{c}\|^2 = R^2 .
-\]
+</script>
 
 Sustituyendo la ecuación del rayo obtenemos una ecuación cuadrática en ***t***:
 
-\[
+<script type="math/tex; mode=display">
 \|\mathbf{o}+t\mathbf{d} - \mathbf{c}\|^2 = R^2
-\]
+</script>
 
-\[
+<script type="math/tex; mode=display">
 (\mathbf{d}\cdot\mathbf{d})t^2 + 2\mathbf{d}\cdot(\mathbf{o}-\mathbf{c})t + \|\mathbf{o}-\mathbf{c}\|^2 - R^2 = 0 .
-\]
+</script>
 
 Como **d** está normalizado, \(\mathbf{d}\cdot\mathbf{d}=1\) y la ecuación se reduce a  
 
-\[
+<script type="math/tex; mode=display">
 t^2 + 2b t + c = 0,
-\]
+</script>
 
 con  
 
-\[
+<script type="math/tex; mode=display">
 b = \mathbf{d}\cdot(\mathbf{o}-\mathbf{c}),\qquad
 c = \|\mathbf{o}-\mathbf{c}\|^2 - R^2 .
-\]
+</script>
 
 El discriminante  
 
-\[
+<script type="math/tex; mode=display">
 \Delta = b^2 - c
-\]
+</script>
 
 determina la existencia de intersección:
 
@@ -23771,9 +23771,9 @@ Para la mayoría de pipelines de ray‑casting se prefiere una aproximación que
    - El centro de la esfera es el centro de la AABB.  
    - El radio es la mitad de la diagonal de la AABB:  
 
-     \[
-     R = \frac{1}{2}\sqrt{(\Delta x)^2+(\Delta y)^2+(\Delta z)^2}
-     \]
+     <script type="math/tex; mode=display">
+R = \frac{1}{2}\sqrt{(\Delta x)^2+(\Delta y)^2+(\Delta z)^2}
+</script>
 
 2. **Esfera a partir del Convex Hull (si está disponible)**  
    - Tomar los vértices del hull; la esfera de la AABB sobre esos vértices suele ser aceptable.
@@ -23781,9 +23781,9 @@ Para la mayoría de pipelines de ray‑casting se prefiere una aproximación que
 3. **Escalado de la esfera de los bounding boxes jerárquicos**  
    - En una BVH, cada nodo interno posee una esfera que encierra las esferas de sus hijos. El radio se calcula como  
 
-     \[
-     R = \max\big(R_{\text{left}},\, R_{\text{right}},\, \|c_{\text{left}}-c_{\text{right}}\|/2 + \max(R_{\text{left}},R_{\text{right}})\big)
-     \]
+     <script type="math/tex; mode=display">
+R = \max\big(R_{\text{left}},\, R_{\text{right}},\, \|c_{\text{left}}-c_{\text{right}}\|/2 + \max(R_{\text{left}},R_{\text{right}})\big)
+</script>
 
    - El centro se coloca en el punto medio de la línea que une los dos centros.
 
@@ -24011,16 +24011,16 @@ A continuación se expone, paso a paso, el razonamiento geométrico, la formulac
 ## 1. Concepto geométrico
 
 Un triángulo en el espacio 3D está definido por tres vértices  
-\[
+<script type="math/tex; mode=display">
 \mathbf{v}_0,\ \mathbf{v}_1,\ \mathbf{v}_2 \in \mathbb{R}^3 .
-\]
+</script>
 
 Cualquier punto \(\mathbf{p}\) que pertenezca al plano que contiene al triángulo puede expresarse como una combinación lineal de los vértices:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{p}= \alpha \,\mathbf{v}_0 + \beta \,\mathbf{v}_1 + \gamma \,\mathbf{v}_2,
 \qquad \alpha+\beta+\gamma = 1.
-\]
+</script>
 
 Los escalares \(\alpha,\beta,\gamma\) son **coordenadas baricéntricas** del punto respecto al triángulo.  
 Cuando los tres escalares son no negativos, el punto está dentro del triángulo (incluyendo sus bordes). Si alguno es negativo, el punto se sale del dominio triangular, aunque siga perteneciendo al plano.
@@ -24035,20 +24035,20 @@ Imagine que el triángulo es una pizza y los vértices son los puntos donde est�
 
 Supongamos que ya hemos hallado el parámetro *t* de la ecuación del rayo  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}(t)=\mathbf{o}+t\mathbf{d},
-\]
+</script>
 
 donde \(\mathbf{o}\) es el origen y \(\mathbf{d}\) la dirección normalizada.  
 El punto de intersección con el plano del triángulo es  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{p}= \mathbf{o}+t\mathbf{d}.
-\]
+</script>
 
 Para obtener las coordenadas baricéntricas de \(\mathbf{p}\) respecto al triángulo, basta con resolver el sistema:
 
-\[
+<script type="math/tex; mode=display">
 \underbrace{\begin{bmatrix}
 \mathbf{v}_0 & \mathbf{v}_1 & \mathbf{v}_2
 \end{bmatrix}}_{\text{Matriz }3\times3}
@@ -24057,7 +24057,7 @@ Para obtener las coordenadas baricéntricas de \(\mathbf{p}\) respecto al trián
 \end{bmatrix}
 = \mathbf{p},
 \qquad \alpha+\beta+\gamma=1 .
-\]
+</script>
 
 En la práctica se evita resolver un sistema 3×3 directamente, porque la condición de suma a uno permite reducir el número de incógnitas a **dos**. Una forma compacta y extremadamente usada en ray‑tracing es el **método de Möller‑Trumbore** (1997), que simultáneamente calcula *t* y los valores baricéntricos sin necesidad de matrices inversas.
 
@@ -24065,62 +24065,62 @@ En la práctica se evita resolver un sistema 3×3 directamente, porque la condic
 
 1. **Aristas del triángulo**  
 
-   \[
-   \mathbf{e}_1 = \mathbf{v}_1 - \mathbf{v}_0,\qquad
+   <script type="math/tex; mode=display">
+\mathbf{e}_1 = \mathbf{v}_1 - \mathbf{v}_0,\qquad
    \mathbf{e}_2 = \mathbf{v}_2 - \mathbf{v}_0.
-   \]
+</script>
 
 2. **Vector perpendicular al plano del rayo y a \(\mathbf{e}_2\)**  
 
-   \[
-   \mathbf{h} = \mathbf{d} \times \mathbf{e}_2.
-   \]
+   <script type="math/tex; mode=display">
+\mathbf{h} = \mathbf{d} \times \mathbf{e}_2.
+</script>
 
 3. **Determinante (producto escalar)**  
 
-   \[
-   a = \mathbf{e}_1 \cdot \mathbf{h}.
-   \]
+   <script type="math/tex; mode=display">
+a = \mathbf{e}_1 \cdot \mathbf{h}.
+</script>
 
    Si \(|a| < \varepsilon\) el rayo es paralela al plano (no hay intersección válida).
 
 4. **Factor de escala inversa**  
 
-   \[
-   f = 1.0 / a .
-   \]
+   <script type="math/tex; mode=display">
+f = 1.0 / a .
+</script>
 
 5. **Cálculo de \(\beta\)**  
 
-   \[
-   \mathbf{s} = \mathbf{o} - \mathbf{v}_0, \qquad
+   <script type="math/tex; mode=display">
+\mathbf{s} = \mathbf{o} - \mathbf{v}_0, \qquad
    \beta = f \, (\mathbf{s} \cdot \mathbf{h}).
-   \]
+</script>
 
    Si \(\beta < 0\) o \(\beta > 1\) el punto está fuera del triángulo.
 
 6. **Cálculo de \(\gamma\)**  
 
-   \[
-   \mathbf{q} = \mathbf{s} \times \mathbf{e}_1, \qquad
+   <script type="math/tex; mode=display">
+\mathbf{q} = \mathbf{s} \times \mathbf{e}_1, \qquad
    \gamma = f \, (\mathbf{d} \cdot \mathbf{q}).
-   \]
+</script>
 
    Si \(\gamma < 0\) o \(\beta + \gamma > 1\) el punto está fuera.
 
 7. **Parámetro de la distancia al punto**  
 
-   \[
-   t = f \, (\mathbf{e}_2 \cdot \mathbf{q}).
-   \]
+   <script type="math/tex; mode=display">
+t = f \, (\mathbf{e}_2 \cdot \mathbf{q}).
+</script>
 
    Si \(t < \varepsilon\) la intersección está detrás del origen del rayo.
 
 En este esquema, \(\alpha\) se obtiene indirectamente mediante la condición de suma a uno:
 
-\[
+<script type="math/tex; mode=display">
 \alpha = 1 - \beta - \gamma .
-\]
+</script>
 
 **Ventajas**: solo se usan productos cruzados y escalares, sin inversas de matrices, por lo que el algoritmo es extremadamente rápido y numéricamente estable.
 
@@ -24236,9 +24236,9 @@ HitInfo intersectTriangle(Vec3 orig, Vec3 dir,
 
 Una vez que se cuenta con \(\alpha, \beta, \gamma\), cualquier dato “per‑vertex” puede ser interpolado linealmente:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{A}_{\text{hit}} = \alpha \,\mathbf{A}_0 + \beta \,\mathbf{A}_1 + \gamma \,\mathbf{A}_2 .
-\]
+</script>
 
 ### 4.1. Normales interpoladas (suavizado)
 
@@ -24298,11 +24298,11 @@ En escenas a gran escala (por ejemplo, simulaciones astronómicas) la pérdida d
 
 En la fase de rasterización (por ejemplo, en un *deferred shading* híbrido) se necesita convertir coordenadas de píxeles a barycentricas para interpolar atributos en el búfer de alisado. El mismo sistema lineal se utiliza, pero con los vértices proyectados a coordenadas de pantalla \((x, y)\). La fórmula está basada en el cálculo del área del triángulo:
 
-\[
+<script type="math/tex; mode=display">
 \beta = \frac{ \text{area}(p, v_2, v_0) }{ \text{area}(v_0, v_1, v_2) },
 \qquad
 \gamma = \frac{ \text{area}(v_0, p, v_1) }{ \text{area}(v_0, v_1, v_2) }.
-\]
+</script>
 
 Este método es útil cuando se necesita volver a calcular barycentricas a partir del píxel, pero no para el ray‑tracer, donde ya se dispone de la intersección exacta.
 
@@ -24310,11 +24310,11 @@ Este método es útil cuando se necesita volver a calcular barycentricas a parti
 
 Los valores baricéntricos obtenidos directamente del algoritmo de Möller‑Trumbore son **lineales en el espacio de la cámara**. Cuando se interpolan atributos que dependen de la distancia (por ejemplo, UV en texturas), se requiere una corrección de perspectiva:
 
-\[
+<script type="math/tex; mode=display">
 \tilde{\beta} = \frac{\beta / w_1}{\alpha/w_0 + \beta/w_1 + \gamma/w_2},
 \qquad
 \tilde{\gamma} = \frac{\gamma / w_2}{\alpha/w_0 + \beta/w_1 + \gamma/w_2},
-\]
+</script>
 
 donde \(w_i\) es la componente homogénea del vértice después de la proyección. En ray‑tracing esto se aplica después de transformar el punto de intersección a espacio del mundo y, opcionalmente, a espacio de cámara, pero la mayoría de los motores prefieren interpolar directamente en el espacio del mundo, evitando la corrección manual.
 
@@ -24813,9 +24813,9 @@ En un motor de trazado de rayos (ray‑tracing) la prueba de intersección entre
 
 Una AABB se define por dos vectores de punto **pmin** y **pmax**:
 
-\[
+<script type="math/tex; mode=display">
 \text{AABB} = \{ \mathbf{x}\in\mathbb{R}^3 \mid p_{\min,i}\le x_i \le p_{\max,i}, \; i\in\{x,y,z\}\}
-\]
+</script>
 
 Los límites se almacenan en coordenadas del mismo sistema que el rayo, es decir, en el espacio del mundo o en el espacio del objeto, según el nivel de la jerarquía.
 
@@ -24823,9 +24823,9 @@ Los límites se almacenan en coordenadas del mismo sistema que el rayo, es decir
 
 Un rayo se representa por su origen **o** y su dirección **d** (normalizada o no). La ecuación paramétrica es:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}(t)=\mathbf{o}+t\mathbf{d},\qquad t\ge 0
-\]
+</script>
 
 El algoritmo de intersección debe devolver, si existe, los valores paramétricos de entrada (`tmin`) y salida (`tmax`) de la caja, y opcionalmente el índice del eje que genera la mayor entrada (útil para la subdivisión de BVH).
 
@@ -24855,17 +24855,17 @@ Kay y Kajiya demostraron que el cálculo puede reducirse a tres divisiones y a c
 
 Para cada eje `i ∈ {x,y,z}` definimos:
 
-\[
+<script type="math/tex; mode=display">
 t_{0}^{i}= \frac{p_{\min,i} - o_i}{d_i}, \qquad
 t_{1}^{i}= \frac{p_{\max,i} - o_i}{d_i}
-\]
+</script>
 
 Si `d_i` es negativo, los valores se invierten automáticamente (el algoritmo intercambia `t0` y `t1`). El intervalo global de intersección es:
 
-\[
+<script type="math/tex; mode=display">
 t_{\text{enter}} = \max\bigl(t_{0}^{x},t_{0}^{y},t_{0}^{z}\bigr),\qquad
 t_{\text{exit}}  = \min\bigl(t_{1}^{x},t_{1}^{y},t_{1}^{z}\bigr)
-\]
+</script>
 
 Existe intersección cuando `t_enter ≤ t_exit` y `t_exit ≥ 0`. El caso `t_enter < 0` indica que el origen del rayo está dentro de la caja; en trazado de sombras suele aceptarse como intersección inmediata.
 
@@ -25106,15 +25106,15 @@ Una superficie **implícita** se describe mediante una función escalar \(F(\mat
 
 Un rayo se describe mediante su origen \(\mathbf{o}\) y su dirección normalizada \(\mathbf{d}\):
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}(t) = \mathbf{o} + t\mathbf{d}, \qquad t\ge 0
-\]
+</script>
 
 Insertando \(\mathbf{r}(t)\) en la ecuación implícita de la primitiva se obtiene una ecuación escalar en \(t\). En la mayoría de los casos la ecuación es **cuadrática**:
 
-\[
+<script type="math/tex; mode=display">
 At^{2} + Bt + C = 0
-\]
+</script>
 
 Los coeficientes \((A,B,C)\) dependen de los parámetros geométricos del primitivo y de los componentes del rayo. Resolver la cuadrática y descartar discriminantes negativos o valores de \(t\) fuera del rango válido da la intersección deseada.
 
@@ -25126,30 +25126,30 @@ Los coeficientes \((A,B,C)\) dependen de los parámetros geométricos del primit
 
 Sea \(\mathbf{p}(t) = \mathbf{o}+t\mathbf{d}\). Definimos el vector desplazado al eje:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{m} = \mathbf{p}(t)-\mathbf{c} = (\mathbf{o}-\mathbf{c}) + t\mathbf{d}
-\]
+</script>
 
 El componente de \(\mathbf{m}\) paralelo al eje es \(\mathbf{m}_{\parallel}= (\mathbf{m}\!\cdot\!\mathbf{a})\mathbf{a}\). El componente **radial** (ortogonal al eje) es:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{m}_{\perp}= \mathbf{m} - \mathbf{m}_{\parallel}
-\]
+</script>
 
 Con la definición implícita:
 
-\[
+<script type="math/tex; mode=display">
 \|\mathbf{m}_{\perp}\|^{2} - r^{2}=0
-\]
+</script>
 
 Expandimos:
-\[
+<script type="math/tex; mode=display">
 \|\mathbf{m}\|^{2} - (\mathbf{m}\!\cdot\!\mathbf{a})^{2} - r^{2}=0
-\]
+</script>
 
 Sustituimos \(\mathbf{m}= \mathbf{w}+t\mathbf{d}\) donde \(\mathbf{w}= \mathbf{o}-\mathbf{c}\):
 
-\[
+<script type="math/tex; mode=display">
 \underbrace{\|\mathbf{d}\|^{2} - (\mathbf{d}\!\cdot\!\mathbf{a})^{2}}_{A}
 \,t^{2}
 \;+\;
@@ -25158,7 +25158,7 @@ Sustituimos \(\mathbf{m}= \mathbf{w}+t\mathbf{d}\) donde \(\mathbf{w}= \mathbf{o
 \;+\;
 \underbrace{\|\mathbf{w}\|^{2} - (\mathbf{w}\!\cdot\!\mathbf{a})^{2} - r^{2}}_{C}
 =0
-\]
+</script>
 
 Si \(\mathbf{d}\) está normalizado, \(\|\mathbf{d}\|^{2}=1\). En la práctica guardamos los productos escalares:
 
@@ -25225,9 +25225,9 @@ static float intersect_cylinder(
 Para un cilindro de altura \(h\) con planos de corte en \(\mathbf{c}_{0}\) y \(\mathbf{c}_{1}\) (ambos en la línea del eje), después de obtener el *t* del cilindro infinito:
 
 1. Calculamos la coordenada axial del punto de intersección:
-   \[
-   y = (\mathbf{p}(t) - \mathbf{c})\!\cdot\!\mathbf{a}
-   \]
+   <script type="math/tex; mode=display">
+y = (\mathbf{p}(t) - \mathbf{c})\!\cdot\!\mathbf{a}
+</script>
 2. Si \(y\) está fuera del rango \([0, h]\) la intersección no pertenece al cuerpo finito.  
 3. En caso contrario, también debemos considerar la intersección con los “tapones”, que son simplemente **discos** perpendiculares al eje, con ecuación \((\mathbf{p} - \mathbf{c}_{i})\!\cdot\!\mathbf{a} = 0\) y \(\|(\mathbf{p} - \mathbf{c}_{i}) - ((\mathbf{p} - \mathbf{c}_{i})\!\cdot\!\mathbf{a})\mathbf{a}\|\le r\).
 
@@ -25281,10 +25281,10 @@ Un cono recto se define por:
 
 Una forma frecuente es usar la **relación** \(\tan\theta = k\). Con ello la ecuación implícita se simplifica a:
 
-\[
+<script type="math/tex; mode=display">
 ((\mathbf{p}-\mathbf{v})\!\cdot\!\mathbf{a})^{2}
 - k^{2}\,\| \mathbf{p}-\mathbf{v}\|^{2}=0
-\]
+</script>
 
 Los puntos con \((\mathbf{p}-\mathbf{v})\!\cdot\!\mathbf{a}<0\) están “detrás” del vértice y no pertenecen al cono (a menos que se trate de un cono doble); en la mayoría de los trazadores consideramos sólo el **cono abierto** (el que “apunta” en la dirección de \(\mathbf{a}\)).
 
@@ -25292,14 +25292,14 @@ Los puntos con \((\mathbf{p}-\mathbf{v})\!\cdot\!\mathbf{a}<0\) están “detrá
 
 Denotemos \(\mathbf{m} = \mathbf{o} - \mathbf{v}\). La sustitución \(\mathbf{p}(t)=\mathbf{o}+t\mathbf{d}\) da:
 
-\[
+<script type="math/tex; mode=display">
 \bigl((\mathbf{m}+t\mathbf{d})\!\cdot\!\mathbf{a}\bigr)^{2}
 - k^{2}\,\| \mathbf{m}+t\mathbf{d}\|^{2}=0
-\]
+</script>
 
 Expandiendo y recogiendo términos:
 
-\[
+<script type="math/tex; mode=display">
 \underbrace{(\mathbf{d}\!\cdot\!\mathbf{a})^{2} - k^{2}}_{A}t^{2}
 \;+\;
 \underbrace{2\bigl((\mathbf{m}\!\cdot\!\mathbf{a})(\mathbf{d}\!\cdot\!\mathbf{a}) -
@@ -25307,7 +25307,7 @@ k^{2}\,\mathbf{m}\!\cdot\!\mathbf{d}\bigr)}_{B}t
 \;+\;
 \underbrace{(\mathbf{m}\!\cdot\!\mathbf{a})^{2} - k^{2}\,\|\mathbf{m}\|^{2}}_{C}
 =0
-\]
+</script>
 
 En C:
 
@@ -25324,16 +25324,16 @@ float C  = ma * ma - k * k * dot(m, m);
 El algoritmo es estructuralmente idéntico al cilindro, pero con dos diferencias críticas:
 
 1. **Criterio de “frente”**: después de obtener `t`, debemos comprobar que el punto está **delante** del vértice:
-   \[
-   (\mathbf{p}(t)-\mathbf{v})\!\cdot\!\mathbf{a} > 0
-   \]
+   <script type="math/tex; mode=display">
+(\mathbf{p}(t)-\mathbf{v})\!\cdot\!\mathbf{a} > 0
+</script>
    Si no se cumple, la intersección corresponde al cono “inverso” (parte trasera) y se descarta.
 
 2. **Cono truncado (altura h)**: para un cono finito, se define un plano base a distancia `h` del vértice a lo largo del eje. Tras hallar `t`, calculamos:
 
-   \[
-   y = (\mathbf{p}(t)-\mathbf{v})\!\cdot\!\mathbf{a}
-   \]
+   <script type="math/tex; mode=display">
+y = (\mathbf{p}(t)-\mathbf{v})\!\cdot\!\mathbf{a}
+</script>
 
    La condición válida es \(0 < y < h\). Si `y` está fuera del rango, el rayo toca la extensión infinita del cono, pero no el segmento truncado.
 
@@ -25392,9 +25392,9 @@ static float intersect_cone(
 
 Al igual que con el cilindro cerrado, un cono truncado posee una **base circular** (un disco) situada en el plano:
 
-\[
+<script type="math/tex; mode=display">
 (\mathbf{p} - (\mathbf{v}+h\mathbf{a}))\!\cdot\!\mathbf{a}=0
-\]
+</script>
 
 Para considerarla, aplicamos la rutina genérica de intersección rayo‑disco:
 

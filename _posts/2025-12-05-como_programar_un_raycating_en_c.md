@@ -309,9 +309,9 @@ La óptica geométrica, establecida en el siglo XVII por **Descartes** y **Ferma
 
 1. **Ley de reflexión:**  \(\theta_i = \theta_r\).  
 2. **Ley de refracción (Snell‑Descartes):**  
-   \[
-   n_1 \sin \theta_i = n_2 \sin \theta_t
-   \]
+   <script type="math/tex; mode=display">
+n_1 \sin \theta_i = n_2 \sin \theta_t
+</script>
 
 Estos enunciados son *algebraicos*; por lo tanto, pueden implementarse mediante ecuaciones lineales y trigonométricas en una computadora.
 
@@ -333,9 +333,9 @@ typedef struct {
 
 Un rayo se describe con la ecuación paramétrica:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{p}(t) = \mathbf{o} + t\mathbf{d}, \qquad t \ge 0
-\]
+</script>
 
 donde:
 - \(\mathbf{o}\) es el origen del rayo,
@@ -410,11 +410,11 @@ A finales de los 70, **James Kajiya**, entonces investigador visitante en Bell L
 
 ### 4.1. La ecuación de renderizado (versión simplificada)
 
-\[
+<script type="math/tex; mode=display">
 L_o(\mathbf{x}, \omega_o) = L_e(\mathbf{x}, \omega_o) +
 \int_{\Omega} f_r(\mathbf{x}, \omega_i, \omega_o) \, L_i(\mathbf{x}, \omega_i) \,
 \cos\theta_i \, d\omega_i
-\]
+</script>
 
 Donde:
 - \(L_o\) es la radiancia reflejada hacia la dirección \(\omega_o\).
@@ -5897,9 +5897,9 @@ int x_err = y = 5, y + 2; // equivale a (x = (y = 5)), y+2 → x = 5, y+2 se des
 
 Supongamos que implementamos la fórmula clásica de proyección de pantalla:
 
-\[
+<script type="math/tex; mode=display">
 \text{projHeight} = \frac{C}{\text{dist}} \qquad\text{donde } C = \text{distancia al plano de proyección}.
-\]
+</script>
 
 Código ingenuo:
 
@@ -6181,9 +6181,9 @@ typedef struct {
 - El vector `plane` tiene una longitud que depende del FOV deseado. Por ejemplo, para un FOV de 60°, `|plane| = tan(FOV/2)`.  
 - Con `dir` y `plane` podemos construir cualquier rayo mediante una combinación lineal:  
 
-  \[
-  \text{rayDir} = \text{cam.dir} + \text{cam.plane} \times \text{cameraX}
-  \]
+  <script type="math/tex; mode=display">
+\text{rayDir} = \text{cam.dir} + \text{cam.plane} \times \text{cameraX}
+</script>
 
   donde `cameraX` está en el rango \([-1, 1]\) según la columna de pantalla.
 
@@ -12189,9 +12189,9 @@ Un vector 𝑣 = (𝑥, 𝑦) puede interpretarse como:
 
 El **espacio vectorial** ℝ² está dotado de una **norma Euclídea**:  
 
-\[
+<script type="math/tex; mode=display">
 \| \mathbf{v} \| = \sqrt{x^{2}+y^{2}}
-\]
+</script>
 
 Esta norma determina la *longitud* del vector y será fundamental para la normalización (obtener un vector unitario) que se necesita al calcular la dirección de un rayo.
 
@@ -12238,9 +12238,9 @@ Sumar `A = (aₓ, aᵧ)` y `B = (bₓ, bᵧ)` produce un nuevo vector `C = A + B
 
 En ray‑casting, la suma se usa para **desplazar** la posición del jugador o la posición de un rayo a partir de la dirección y la distancia recorrida:
 
-\[
+<script type="math/tex; mode=display">
 \text{posicion\_actual} = \text{posicion\_inicial} + \text{direccion} \times \text{distancia}
-\]
+</script>
 
 ### 2.2. Implementación en C
 
@@ -12295,9 +12295,9 @@ El resultado será `(22.0f, 12.45f)`, lo que corresponde a un paso de 0.05 unida
 
 Restar `B` de `A` equivale a **desplazar** `B` al origen y luego invertir su sentido:
 
-\[
+<script type="math/tex; mode=display">
 A - B = (aₓ-bₓ,\; aᵧ-bᵧ)
-\]
+</script>
 
 Geometricamente, el vector resultante apunta desde `B` hacia `A`. En ray‑casting la resta se emplea para:
 
@@ -12354,9 +12354,9 @@ El `sqDist` es la **distancia al cuadrado**, suficiente para decidir cuál celda
 
 Multiplicar un vector `v = (x, y)` por un escalar `k ∈ ℝ` genera:
 
-\[
+<script type="math/tex; mode=display">
 k\,\mathbf{v} = (k\,x,\; k\,y)
-\]
+</script>
 
 Esto **cambia la longitud** del vector en un factor `|k|` y, si `k` es negativo, invierte su dirección. En la sintaxis de C, el operador `*` ya está reservado para este propósito, pero por claridad se encapsula en una función.
 
@@ -12483,9 +12483,9 @@ Este recorrido histórico subraya que, aunque la *hardware* cambie, los concepto
 
 1. **Implementar** una función `vec2_rotate(Vec2 v, float angle)` que gire un vector en sentido contrario a las agujas del reloj usando la fórmula:
 
-   \[
-   v' = (\; v_x \cos\theta - v_y \sin\theta,\; v_x \sin\theta + v_y \cos\theta\; )
-   \]
+   <script type="math/tex; mode=display">
+v' = (\; v_x \cos\theta - v_y \sin\theta,\; v_x \sin\theta + v_y \cos\theta\; )
+</script>
 
 2. Modificar el bucle de movimiento del jugador para **permitir desplazamiento diagonal** con velocidad constante, combinando las teclas *W* y *A* mediante suma de vectores y normalización final.
 
@@ -12511,16 +12511,16 @@ En un motor de ray‑casting la única información geométrica que se necesita 
 
 Dados dos vectores en ℝ³  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{a}= (a_x,\;a_y,\;a_z),\qquad
 \mathbf{b}= (b_x,\;b_y,\;b_z),
-\]
+</script>
 
 su **producto escalar** se define como  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{a}\cdot\mathbf{b}=a_x b_x + a_y b_y + a_z b_z .
-\]
+</script>
 
 El resultado es un **número real**, no un vector. Esta operación cumple:
 
@@ -12542,17 +12542,17 @@ El concepto de producto interno aparece en la obra de **Hermann Grassmann** (184
 
 El vínculo geométrico más útil del producto escalar es su relación con el **coseno del ángulo** \(\theta\) que separa a \(\mathbf{a}\) y \(\mathbf{b}\):
 
-\[
+<script type="math/tex; mode=display">
 \boxed{\;\mathbf{a}\cdot\mathbf{b}= \|\mathbf{a}\|\;\|\mathbf{b}\|\;\cos\theta\;}
-\]
+</script>
 
 De aquí se deduce:
 
-\[
+<script type="math/tex; mode=display">
 \cos\theta = \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\;\|\mathbf{b}\|},
 \qquad
 \theta = \arccos\!\left(\frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\;\|\mathbf{b}\|}\right).
-\]
+</script>
 
 ### 2.1 Interpretación geométrica  
 
@@ -12566,10 +12566,10 @@ En ray‑casting, este resultado permite saber si la superficie está mirando ha
 
 El **producto escalar** también representa la magnitud de la proyección de \(\mathbf{a}\) sobre \(\mathbf{b}\) multiplicada por \(\|\mathbf{b}\|\):
 
-\[
+<script type="math/tex; mode=display">
 \text{proj}_{\mathbf{b}}(\mathbf{a}) = 
 \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{b}\|^{2}}\,\mathbf{b}.
-\]
+</script>
 
 Esta formulación es la base de la **reflexión de Rayleigh‑Fresnel** y de algoritmos de **intersección de planos**.
 
@@ -12591,9 +12591,9 @@ Si `cosTheta <= 0` el rayo incide por la *parte interna* del objeto (p.ej. una e
 
 El modelo de Lambert establece que la radiancia difusa es proporcional al **coseno del ángulo entre la normal y el vector de luz**:
 
-\[
+<script type="math/tex; mode=display">
 L_d = k_d \, I_L \, \max(0,\ \mathbf{n}\cdot\mathbf{l}),
-\]
+</script>
 
 donde \(\mathbf{l}\) es la dirección de la luz (normalizada). En código C:
 
@@ -12606,9 +12606,9 @@ color = multiply(kd, scale(I_L, lambert));
 
 Para el término especular se necesita el **vector espejo** \(\mathbf{r}\):
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{r}=2(\mathbf{n}\cdot\mathbf{l})\mathbf{n}-\mathbf{l}.
-\]
+</script>
 
 El coseno entre \(\mathbf{r}\) y la dirección del observador \(\mathbf{v}\) (también normalizada) determina la intensidad especular:
 
@@ -12863,14 +12863,14 @@ A continuación se aborda su definición matemática, su interpretación geomét
 
 Dados dos vectores **a** = (aₓ, aᵧ, a_z) y **b** = (bₓ, bᵧ, b_z) en ℝ³, el producto vectorial **c** = **a** × **b** se define como
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{c}= 
 \begin{pmatrix}
 a_y b_z - a_z b_y\\[4pt]
 a_z b_x - a_x b_z\\[4pt]
 a_x b_y - a_y b_x
 \end{pmatrix}
-\]
+</script>
 
 Las propiedades que hacen al producto cruzado indispensable en gráficos 3‑D son:
 
@@ -12990,9 +12990,9 @@ El vector resultante `n_raw` tiene módulo igual al **doble del área del trián
 
 El cálculo de la reflexión de un rayo incidente **I** contra una superficie con normal **N** utiliza la siguiente fórmula vectorial:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{R} = \mathbf{I} - 2(\mathbf{I}\cdot\mathbf{N})\mathbf{N}
-\]
+</script>
 
 Aquí el producto cruzado no aparece directamente, pero sí es útil cuando la normal **N** se deriva de dos vectores tangentes **T** y **B** (tangent‑bitangent) que forman un sistema ortonormado local. En muchos shaders de rasterización (y en algunos algoritmos de ray‑casting que usan mapas normales), se necesita construir **N** a partir de **T** y **B**:
 
@@ -13032,13 +13032,13 @@ Para aplicar **mapas de normales** (normal mapping) en ray‑casting, es necesar
 
 3. **Construir** la matriz 3×3 TBN que transforma de coordenadas de textura → mundo:
 
-   \[
-   \mathbf{M}_{\text{TBN}} = \begin{bmatrix}
+   <script type="math/tex; mode=display">
+\mathbf{M}_{\text{TBN}} = \begin{bmatrix}
    \mathbf{T}_x & \mathbf{B}_x & \mathbf{N}_x\\
    \mathbf{T}_y & \mathbf{B}_y & \mathbf{N}_y\\
    \mathbf{T}_z & \mathbf{B}_z & \mathbf{N}_z
    \end{bmatrix}
-   \]
+</script>
 
 4. **Aplicar** la matriz al vector de la normal del mapa:
 
@@ -13215,7 +13215,7 @@ En el algoritmo clásico de *Wolfenstein 3D* (Doom, 1993) los rayos se generan a
 
 Sea \(\theta\) el ángulo de giro (positivo → sentido antihorario). Un punto \((x, y)\) del plano se transforma a \((x', y')\) mediante:
 
-\[
+<script type="math/tex; mode=display">
 \begin{bmatrix}
 x'\\ y'
 \end{bmatrix}
@@ -13229,7 +13229,7 @@ x'\\ y'
 \begin{bmatrix}
 x\\ y
 \end{bmatrix}
-\]
+</script>
 
 La matriz \(R(\theta)\) es ortogonal (\(R^\top R = I\)) y su determinante vale +1, garantizando una **rotación pura** sin escalado ni reflexión.
 
@@ -13557,9 +13557,9 @@ while (!quit) {
 
 Los primeros ray‑casters (Wolfenstein 3D, 1992) usaban exclusivamente dos vectores 2‑D: dirección y plano de cámara. Ese enfoque se derivó directamente del algoritmo de *ray‑casting* de *Doom* (John Carmack, 1993), donde la proyección se realiza mediante una sencilla fórmula lineal:
 
-\[
+<script type="math/tex; mode=display">
 \text{rayDir} = \text{dir} + \text{plane} \times \text{cameraX}
-\]
+</script>
 
 Con el paso de los años y la convergencia hacia **gráficos 3‑D de propósito general**, la comunidad adoptó la *matriz de vista* (view matrix) completa, basada en la formulación de **OpenGL** y **DirectX**. La matriz de vista combina una rotación (orientación) y una traslación (posición) en un solo objeto 4×4, pero los conceptos fundamentales siguen siendo los estudiados aquí: la rotación todavía está representada por sub‑matrices 3×3.
 
@@ -13611,9 +13611,9 @@ Por lo tanto, la calidad de la **inversión de matrices** y la **condición num�
 
 Dados una matriz `A ∈ ℝⁿˣⁿ` y un vector `b`, consideremos el sistema lineal `A x = b`. Si perturbamos ligeramente `b` (por error de redondeo, ruido de entrada, etc.) obtenemos otro sistema `A x̂ = b̂`. La **condición numérica** es la medida que indica cuánto varía la solución `x̂` respecto a la perturbación de `b`. Formalmente:
 
-\[
+<script type="math/tex; mode=display">
 \kappa(A) = \|A\| \, \|A^{-1}\|
-\]
+</script>
 
 donde `‖·‖` puede ser cualquier norma matricial (la 2‑norma es la más habitual).  
 
@@ -13799,10 +13799,10 @@ int mat4_inverse(const mat4 *A, mat4 *invA)
 
 Sea `Â = A + ΔA` la representación flotante de `A` y `Â⁻¹` la inversa obtenida mediante un algoritmo estable (por ejemplo, LU con pivoteo). Wilkinson demostró que el error relativo está acotado por:
 
-\[
+<script type="math/tex; mode=display">
 \frac{\|Â^{-1} - A^{-1}\|}{\|A^{-1}\|} \leq
 \mathcal{O}\bigl(\kappa(A)\bigr) \, \varepsilon_m
-\]
+</script>
 
 donde `εₘ` es la epsilon de la máquina (≈ 1.19×10⁻⁷ para `float`, 2.22×10⁻¹⁶ para `double`).  
 En palabras simples: **entre mayor sea el número de condición, mayor será la pérdida de precisión** en la inversa, incluso si el algoritmo es perfectamente estable.
@@ -14660,9 +14660,9 @@ Dominar este segmento del pipeline no solo hace que el motor sea más robusto; t
 
 En cualquier algoritmo de *ray‑casting* o *ray‑tracing* el **rayo** se define formalmente como una semirrecta en el espacio tridimensional:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{R}(t)=\mathbf O + t\;\mathbf D , \qquad t\ge 0
-\]
+</script>
 
 donde:
 
@@ -14706,9 +14706,9 @@ El origen del rayo no tiene que estar en el centro óptico; puede desplazarse ar
 
 Cuando la cámara se mueve o rota, \(\mathbf O\) se transforma mediante la **matriz de vista** \(V\) (también llamada *camera matrix*). La ecuación típica es:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf O_{\text{world}} = V^{-1} \cdot \mathbf O_{\text{camera}}
-\]
+</script>
 
 En código:
 
@@ -14738,9 +14738,9 @@ Si la cámara está en `(0,0,0)` y la vista es la identidad, entonces `O` es sim
 
 El proceso estándar es:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf D_{\text{unit}} = \frac{\mathbf D}{\|\mathbf D\|} \quad\text{con}\quad \|\mathbf D\| = \sqrt{D_x^2 + D_y^2 + D_z^2}
-\]
+</script>
 
 En C:
 
@@ -14772,28 +14772,28 @@ Para lanzar un rayo desde la cámara hacia cada píxel, es necesario mapear la p
 
 1. **Normalizar coordenadas de pantalla** a rango \([-1, 1]\):
 
-   \[
-   u = \frac{2(p_x + 0.5)}{W} - 1,\qquad
+   <script type="math/tex; mode=display">
+u = \frac{2(p_x + 0.5)}{W} - 1,\qquad
    v = 1 - \frac{2(p_y + 0.5)}{H}
-   \]
+</script>
 
    donde \(W\) y \(H\) son el ancho y alto del framebuffer.
 
 2. **Aplicar la relación de aspecto** y el **campo de visión vertical** \(\theta\):
 
-   \[
-   \alpha = \tan\!\left(\frac{\theta}{2}\right)
-   \]
-   \[
-   x_{\text{cam}} = u \cdot \alpha \cdot \frac{W}{H},\qquad
+   <script type="math/tex; mode=display">
+\alpha = \tan\!\left(\frac{\theta}{2}\right)
+</script>
+   <script type="math/tex; mode=display">
+x_{\text{cam}} = u \cdot \alpha \cdot \frac{W}{H},\qquad
    y_{\text{cam}} = v \cdot \alpha
-   \]
+</script>
 
 3. **Construir el vector en espacio cámara**:
 
-   \[
-   \mathbf D_{\text{cam}} = (x_{\text{cam}},\, y_{\text{cam}},\, -1)
-   \]
+   <script type="math/tex; mode=display">
+\mathbf D_{\text{cam}} = (x_{\text{cam}},\, y_{\text{cam}},\, -1)
+</script>
 
    (asumiendo que la cámara mira hacia \(-Z\) en coordenadas de cámara).
 
@@ -14897,9 +14897,9 @@ Este fragmento se ejecuta miles de veces por fotograma; la mayor parte del coste
 
 Para iluminaciones globales *ambientales* o *environment maps* se emplean **rayos paralelos** cuya magnitud no importa; se usan como si el origen estuviera en el infinito:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf O = (0,0,0), \qquad \mathbf D = \text{dirección del eje} \; (x,y,z) \text{ normalizada}
-\]
+</script>
 
 En este caso, la distancia recorrida se mide en unidades arbitrarias; el motor de trazado simplemente intersecta objetos con la semirrecta definida por \(\mathbf D\).
 
@@ -14997,9 +14997,9 @@ Con esta base teórica y práctica, el lector está preparado para implementar l
 
 En cualquier algoritmo de *ray‑casting* (y, por extensión, de *ray‑tracing*) el punto que controla la posición a lo largo de un rayo es el **parámetro escalar** `t`. La ecuación  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{P}(t)=\mathbf{O}+t\;\mathbf{D}
-\]
+</script>
 
 es la base matemática que permite transformar una descripción abstracta de “una línea que parte del observador” en coordenadas concretas que pueden ser probadas contra la escena (esferas, planos, mallas, etc.). A continuación analizaremos (a) la naturaleza geométrica de `t`, (b) sus rangos de validez, (c) cómo se determina en la práctica mediante intersecciones, y (d) las implicaciones de precisión y rendimiento en C.
 
@@ -15048,21 +15048,21 @@ En computación gráfica, la formulación `P(t)=O+t·D` se popularizó con los p
 
 Una esfera con centro `C` y radio `r` se define implícitamente como:
 
-\[
+<script type="math/tex; mode=display">
 \|\mathbf{P} - \mathbf{C}\|^{2} = r^{2}
-\]
+</script>
 
 Reemplazando `P(t)`:
 
-\[
+<script type="math/tex; mode=display">
 \| \mathbf{O}+t\mathbf{D} - \mathbf{C} \|^{2} = r^{2}
-\]
+</script>
 
 Desarrollando:
 
-\[
+<script type="math/tex; mode=display">
 (\mathbf{D}\cdot\mathbf{D})t^{2}+2\mathbf{D}\cdot(\mathbf{O}-\mathbf{C})t+(\mathbf{O}-\mathbf{C})\cdot(\mathbf{O}-\mathbf{C})-r^{2}=0
-\]
+</script>
 
 Como `D` está normalizado, `D·D = 1`, obtenemos una **ecuación cuadrática** `at²+bt+c=0` con:
 
@@ -15082,17 +15082,17 @@ Los valores de `t` son las raíces de esta ecuación; se calcula el discriminant
 
 Un plano se describe mediante la ecuación implícita:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{N}\cdot(\mathbf{P} - \mathbf{P_0}) = 0
-\]
+</script>
 
 donde `N` es la normal unitária y `P₀` un punto cualquiera del plano. Sustituyendo `P(t)`:
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{N}\cdot(\mathbf{O}+t\mathbf{D} - \mathbf{P_0}) = 0
 \Rightarrow
 t = \frac{\mathbf{N}\cdot(\mathbf{P_0}-\mathbf{O})}{\mathbf{N}\cdot\mathbf{D}}
-\]
+</script>
 
 El denominador `N·D` representa el **coseno del ángulo** entre el rayo y la normal. Si es cercano a cero, el rayo es paralelo al plano y la intersección no es válida (o es infinita).
 
@@ -15210,9 +15210,9 @@ int main(void)
 
 En un motor real, la cámara posee **planos de recorte** cerca (`near`) y lejos (`far`). Sólo los valores `t` que cumplan
 
-\[
+<script type="math/tex; mode=display">
 t_{near} \le t \le t_{far}
-\]
+</script>
 
 son considerados. Esto evita renderizar objetos detrás del plano de visión o a distancias infinitas que desperdician recursos. En la práctica:
 
@@ -15235,9 +15235,9 @@ El intervalo también controla la **precisión numérica**: valores extremadamen
 
 En C, los tipos `float` y `double` siguen la norma IEEE‑754. La mantisa de un `float` tiene 23 bits de precisión (≈ 7 decimales). Cuando se realizan expresiones como  
 
-\[
+<script type="math/tex; mode=display">
 \mathbf{O}+t\mathbf{D}
-\]
+</script>
 
 las operaciones se evalúan en **precisión simple** a menos que se haya activado *extended precision* (`-ffloat-store` o `-mfpmath=387`).  
 
