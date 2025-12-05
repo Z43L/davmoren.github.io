@@ -8,9 +8,9 @@ from typing import Optional, Tuple
 
 # --- CONFIGURACIÓN INICIAL ---
 load_dotenv()
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL")
-API_BASE_URL = "https://openrouter.ai/api/v1"
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "b9bb3d18551c49abb0cb42ef4160c511.-trb3VNrC36kEWjMdhlfBjSR")
+OPENROUTER_MODEL = "gpt-oss:120b-cloud"
+API_BASE_URL = "https://ollama.com"
 # Guardado incremental: cada cuántas secciones escribimos a disco (configurable vía env SAVE_EVERY_SECTIONS)
 SAVE_EVERY_SECTIONS = int(os.getenv("SAVE_EVERY_SECTIONS", "5"))
 RESUME_ENABLED = os.getenv("RESUME", "true").lower() in ("1","true","yes")
@@ -26,7 +26,7 @@ def call_openrouter(prompt):
     print(f"INFO: Llamando al modelo {OPENROUTER_MODEL}...")
     try:
         response = requests.post(
-            url=f"{API_BASE_URL}/chat/completions",
+            url=f"{API_BASE_URL}/v1/chat/completions",
             headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"},
             data=json.dumps({"model": OPENROUTER_MODEL, "messages": [{"role": "user", "content": prompt}]})
         )
