@@ -4,7 +4,7 @@ title: "deep learning profundo"
 date: 2026-01-11 2:31:00 -0000
 author: Z43L
 tags: [Deep Learning, IA, algoritm]
-reading_time: 8
+reading_time: 9
 excerpt: "Redes Neuronales, Arquitecturas Cnn Y Rnn, Optimización Y Frameworks Modernos"
 ---
 # Deep Learning Profundo: Redes Neuronales, Arquitecturas Cnn Y Rnn, Optimización Y Frameworks Modernos
