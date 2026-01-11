@@ -13999,7 +13999,7 @@ Mat4 view_matrix(const WorldPos *pos,
                 const double dirX, const double dirY,
                 const double planeX, const double planeY)
 {
-    Mat4 V = {{{0}}};
+    Mat4 V = {0};
 
     /* Vectores ortonormales */
     double dirLen = sqrt(dirX*dirX + dirY*dirY);
