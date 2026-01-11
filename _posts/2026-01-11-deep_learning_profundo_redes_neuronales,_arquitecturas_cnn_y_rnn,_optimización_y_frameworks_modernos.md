@@ -44323,6 +44323,7 @@ Los algoritmos Q‑learning y SARSA son **temporal‑difference (TD)** que estim
 
 ---
 
+{% raw %}
 ### 2. Q‑learning  
 
 #### 2.1. Origen y carácter “off‑policy”  
@@ -44333,7 +44334,6 @@ Introducido por **Watkins (1989)**, Q‑learning es el primer algoritmo **off‑
 
 Para cada transición \((s_t,a_t,r_{t+1},s_{t+1})\) se actualiza:
 
-{% raw %}
 <script type="math/tex; mode=display">
 \boxed{
 Q_{t+1}(s_t,a_t) \leftarrow Q_{t}(s_t,a_t) + \alpha\Big[ r_{t+1} + \gamma \max_{a'} Q_{t}(s_{t+1},a') - Q_{t}(s_t,a_t)\Big]
@@ -44379,7 +44379,6 @@ Propuesto por **Rummery & Niranjan (1994)**, SARSA es **on‑policy**: la actual
 
 Para la secuencia completa de cinco elementos \((s_t,a_t,r_{t+1},s_{t+1},a_{t+1})\) se actualiza:
 
-{% raw %}
 <script type="math/tex; mode=display">
 \boxed{
 Q_{t+1}(s_t,a_t) \leftarrow Q_{t}(s_t,a_t) + \alpha\Big[ r_{t+1} + \gamma Q_{t}(s_{t+1},a_{t+1}) - Q_{t}(s_t,a_t)\Big]
