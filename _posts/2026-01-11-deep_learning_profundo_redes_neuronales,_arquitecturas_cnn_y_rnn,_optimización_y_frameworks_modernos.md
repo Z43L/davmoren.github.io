@@ -44339,7 +44339,6 @@ Para cada transición \((s_t,a_t,r_{t+1},s_{t+1})\) se actualiza:
 Q_{t+1}(s_t,a_t) \leftarrow Q_{t}(s_t,a_t) + \alpha\Big[ r_{t+1} + \gamma \max_{a'} Q_{t}(s_{t+1},a') - Q_{t}(s_t,a_t)\Big]
 }
 </script>
-{% endraw %}
 
 - \(\alpha\in(0,1]\) es la **tasa de aprendizaje**.  
 - El término entre corchetes es el **error TD**.  
@@ -44384,7 +44383,6 @@ Para la secuencia completa de cinco elementos \((s_t,a_t,r_{t+1},s_{t+1},a_{t+1}
 Q_{t+1}(s_t,a_t) \leftarrow Q_{t}(s_t,a_t) + \alpha\Big[ r_{t+1} + \gamma Q_{t}(s_{t+1},a_{t+1}) - Q_{t}(s_t,a_t)\Big]
 }
 </script>
-{% endraw %}
 
 Observe que el **TD target** es \(r_{t+1} + \gamma Q(s_{t+1},a_{t+1})\), no el máximo posible.
 
