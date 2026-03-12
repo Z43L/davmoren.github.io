@@ -1,0 +1,13 @@
+{
+  "sections": [
+    "## Fundamentos y Principios B\u00e1sicos de Redes Neuronales",
+    "## Arquitectura y Estructura de las Capas Neuronales",
+    "## Funciones de Activaci\u00f3n y su Rol en la No-Linealidad",
+    "## El Algoritmo de Retropropagaci\u00f3n y el Entrenamiento",
+    "## Funciones de P\u00e9rdida y M\u00e9tricas de Evaluaci\u00f3n",
+    "## Regularizaci\u00f3n, Dropout y T\u00e9cnicas de Optimizaci\u00f3n",
+    "## Tipos Especializados de Arquitecturas Neuronales",
+    "## Implementaci\u00f3n Pr\u00e1ctica y Consideraciones de Dise\u00f1o"
+  ],
+  "current": 0
+}
