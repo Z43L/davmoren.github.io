@@ -1,5 +1,5 @@
 ---
----
+
 layout: post
 title: "Redes Neuronales a Fondo"
 date: 2026-03-12 02:06:41 
@@ -9,7 +9,7 @@ reading_time: 78
 excerpt: "Redes Neuronales a Fondo"
 audience: intermedio
 style: técnico
-
+---
 # Redes Neuronales a Fondo
 
 
