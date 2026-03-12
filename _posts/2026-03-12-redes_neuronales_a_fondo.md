@@ -645,3 +645,380 @@ for param in resnet.fc.parameters():
 
 La comprensión profunda de las capas neuronales y sus patrones de conexión constituye el fundamento para diseñar arquitecturas efectivas. Los principios aquí expuestos—inicialización apropiada, normalización establecedora, conexiones residuales para profundidad, y selección de arquitectura según estructura de datos—forman el toolkit esencial del profesional en aprendizaje profundo.
 
+
+## Funciones de Activación y su Rol en la No-Linealidad
+
+# Funciones de Activación y su Rol en la No-Linealidad
+
+## Introducción: El Puente Entre lo Lineal y lo Complejo
+
+En el corazón de toda red neuronal profunda yace un elemento aparentemente simple pero fundamentalmente crucial: la función de activación. Sin ella, una red neuronal se reduciría a una mera transformación lineal, incapaz de capturar las complejidades inherentes a los patrones en datos del mundo real. Este capítulo explora en profundidad las funciones de activación, su fundamento matemático, y por qué la no-linealidad constituye el pilar que permite a las redes neuronales aprender representaciones cada vez más abstractas y sofisticadas.
+
+## El Problema de la Composicion Lineal
+
+### Por Qué las Redes Lineales Son Insuficientes
+
+Para comprender el rol de las funciones de activación, primero debemos entender qué sucede en su ausencia. Considérese una red neuronal feedforward con múltiples capas, pero sin funciones de activación entre ellas. Cada capa realizaría simplemente una transformación lineal de la forma:
+
+$$y = W^{(L)} \cdot (W^{(L-1)} \cdot (... \cdot (W^{(1)} \cdot x + b^{(1)})...)) + b^{(L)}$$
+
+Por propiedades de la multiplicación de matrices, esta composición de transformaciones lineales puede simplificarse en una única transformación lineal equivalente:
+
+$$y = W_{eq} \cdot x + b_{eq}$$
+
+donde $W_{eq} = W^{(L)} \cdot W^{(L-1)} \cdot ... \cdot W^{(1)}$ y los términos de sesgo se combinan de manera análoga.
+
+Esta equivalencia mathematics tiene una consecuencia profunda: **una red neuronal sin funciones de activación, sin importar cuántas capas posea, es exactamente equivalente a una red de una sola capa lineal**. La profundidad, en este caso, no aporta capacidad representacional adicional. La red queda limitada a aprender únicamente funciones separables linealmente, un subconjunto extraordinariamente restrictivo de todas las posibles relaciones entre entradas y salidas.
+
+### El Poder de la No-Linealidad
+
+La introducción de funciones de activación no lineales rompe esta limitación fundamental. Cuando cada capa aplica una transformación no lineal después de su operación lineal, la composición de capas produce una familia de funciones extraordinariamente rica. Esta propiedad, conocida como **aproximación universal**, establece que una red neuronal feedforward con una única capa oculta y un número suficiente de neuronas puede aproximar cualquier función continua en un dominio compacto.
+
+Matemáticamente, esto significa que la red puede aprender:
+
+- fronteras de decisión complejas y no convexas
+- interacciones no lineales entre características de entrada
+- transformaciones jerárquicas de representación
+
+La no-linealidad es, en esencia, lo que permite a la red "plegar" el espacio de entrada de maneras elaboradas, proyectando datos originalmente inseparables linealmente hacia espacios donde la separación becomes posible.
+
+## Funciones de Activación Clasicas
+
+### La Funcion Escalon (Step Function)
+
+La función escalón representa la activación más primitiva, utilizada históricamente en los primeros modelos de perceptrón:
+
+$$f(x) = \begin{cases} 1 & \text{si } x \geq 0 \\ 0 & \text{si } x < 0 \end{cases}$$
+
+Su naturaleza binaria resulta intuitiva: la neurona "dispara" completamente o no lo hace. Sin embargo, esta discontinuidad en $x=0$ impide el uso de técnicas de gradiente descendente, ya que el gradiente es cero en casi todas partes (excepto en el punto de discontinuidad). Durante el entrenamiento con retropropagación, los gradientes no pueden fluir efectivamente, causando que la red no aprenda.
+
+### La Funcion Sigmoide
+
+La función sigmoide, también conocida como logística, suaviza la escalón proporcionando una transición continua:
+
+$$\sigma(x) = \frac{1}{1 + e^{-x}}$$
+
+**Propiedades fundamentales:**
+
+- **Rango de salida:** $(0, 1)$, útil para modelar probabilidades
+- **Derivada:** $\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$
+- **Saturation:** Para valores extremos de $x$, la función satura cerca de 0 y 1
+
+La sigmoide resolve el problema de diferenciabilidad, permitiendo el entrenamiento mediante gradiente descendente. No obstante, presenta limitaciones significativas:
+
+**Problema del gradiente desvaneciente:** En las regiones de saturación, la derivada máxima es 0.25 (cuando $\sigma(x) = 0.5$). En redes profundas, al propagar el error hacia atrás, el gradiente se multiplica repetidamente por valores menores a 0.25, resultando en gradientes que convergen exponencialmente a cero. Esto dificulta el entrenamiento de redes con muchas capas.
+
+**No centrado en cero:** Las salidas siempre son positivas, lo que puede causar oscilaciones durante el entrenamiento y slowar la convergencia.
+
+### La Funcion Tangente Hiperbolico
+
+La función tangente hiperbólico resuelve parcialmente el problema de centrado en cero:
+
+$$\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$$
+
+**Propiedades:**
+
+- **Rango de salida:** $(-1, 1)$, media en cero
+- **Derivada:** $\tanh'(x) = 1 - \tanh^2(x)$
+- **Relación con sigmoide:** $\tanh(x) = 2\sigma(2x) - 1$
+
+Aunque el rango centrado en cero mejora la convergencia respecto a la sigmoide, el problema del gradiente desvaneciente persiste porque la derivada máxima es 1 (no mayor). Las neuronas sigmoide y tanh siguen siendo susceptibles a la saturación en redes profundas.
+
+## ReLU y la Revolucion del Activador Lineal Rectificado
+
+### Introduccion a ReLU
+
+La Rectified Linear Unit (ReLU), introducida por Nair y Hinton en 2010, transformó el entrenamiento de redes profundas:
+
+$$f(x) = \max(0, x)$$
+
+**Propiedades:**
+
+- **Computacionalmente eficiente:** Solo requiere comparaciones y operaciones de máximo
+- **Gradiente constante:** Para $x > 0$, la derivada es exactamente 1
+- **Esparsidad:** Produce activaciones dispersas, donde muchos valores son exactamente cero
+
+La simplicidad de ReLU resolve múltiples problemas de sus predecesoras. Al no saturar para valores positivos grandes, el gradiente fluye sin atenuación, permitiendo el entrenamiento efectivo de redes con cientos de capas.
+
+### El Problema de la "Dying ReLU"
+
+Sin embargo, ReLU introduce un nuevo fenómeno: neuronas que permanentemente 输出an cero, conocida como el problema de la "ReLU muriendo" o "Dying ReLU".
+
+Cuando una neurona con activación ReLU recibe suficiente información negativa durante el entrenamiento, su sesgo puede desplazarse de manera que **toda entrada produzcan salida negativa**, causando que la neurona siempre output cero. En este estado, el gradiente es cero para todas las entradas, y la neurona deja de aprender.
+
+Matemáticamente, si $W \cdot x + b < 0$ para todas las entradas del conjunto de datos, el gradiente con respecto a $W$ y $b$ será siempre cero durante la retropropagación.
+
+## Variantes de ReLU
+
+### Leaky ReLU
+
+Leaky ReLU introduce una pequeña pendiente para entradas negativas:
+
+$$f(x) = \begin{cases} x & \text{si } x > 0 \\ \alpha x & \text{si } x \leq 0 \end{cases}$$
+
+donde $\alpha$ es un hiperparámetro pequeño (típicamente 0.01). Esto permite que un gradiente pequeño pero no nulo fluya incluso cuando la entrada es negativa, previniendo el problema de la neurona mueta.
+
+### Parametric ReLU (PReLU)
+
+PReLU generaliza Leaky ReLU haciendo que el parámetro $\alpha$ sea aprendible durante el entrenamiento:
+
+$$f(x) = \begin{cases} x & \text{si } x > 0 \\ \alpha x & \text{si } x \leq 0 \end{cases}$$
+
+donde $\alpha$ se actualiza mediante gradiente descendente junto con los demás parámetros de la red.
+
+### Exponential Linear Unit (ELU)
+
+ELU utiliza una exponencial para entradas negativas:
+
+$$f(x) = \begin{cases} x & \text{si } x > 0 \\ \alpha(e^x - 1) & \text{si } x \leq 0 \end{cases}$$
+
+donde $\alpha > 0$ es un hiperparámetro. Para valores negativos, ELU produce valores ligeramente negativos que empujan las activaciones hacia cero, manteniendo una media cercana a cero. Esto puede mejorar el aprendizaje, aunque con mayor costo computacional debido a la exponencial.
+
+### Scaled Exponential Linear Unit (SELU)
+
+SELU, introducida por Klambauer et al. en 2017, representa un enfoque fundamentalmente distinto. Para entradas normalizadas adecuadamente, SELU produce activaciones con propiedades estadísticas específicas:
+
+$$f(x) = \lambda \begin{cases} x & \text{si } x > 0 \\ \alpha(e^x - 1) & \text{si } x \leq 0 \end{cases}$$
+
+con $\lambda \approx 1.0507$ y $\alpha \approx 1.6733$. Bajo ciertas condiciones (normalización de entradas, pesos inicializados correctamente), las activaciones de una red feedforward con SELU se autorregulan, manteniendo media cero y varianza uno a través de las capas. Esto permite construir redes muy profundas sin necesidad de técnicas como Batch Normalization.
+
+## Funciones de Activacion Modernas
+
+### GELU (Gaussian Error Linear Unit)
+
+GELU, introducida en el paper de BERT (Devlin et al., 2019), combina propiedades de dropout, regularización y funciones de activación no lineales:
+
+$$\text{GELU}(x) = x \cdot \Phi(x)$$
+
+donde $\Phi(x)$ es la función de distribución acumulativa de la distribución normal estándar. Una aproximación computacionalmente eficiente es:
+
+$$\text{GELU}(x) \approx 0.5x\left(1 + \tanh\left(\sqrt{2/\pi}(x + 0.044715x^3)\right)\right)$$
+
+GELU weighting las entradas por su valor, pero multiplicándolas por la probabilidad de que la entrada provenga de una distribución normal positiva. Esto produce una activación que es más suave que ReLU y estadísticamente más significativa.
+
+### Swish
+
+Swish, descubierta mediante búsqueda automática de arquitecturas, se define como:
+
+$$\text{Swish}(x) = x \cdot \sigma(\beta x) = \frac{x}{1 + e^{-\beta x}}$$
+
+donde $\beta$ es un hiperparámetro aprendible o constante. Para $\beta = 1$, tenemos la versión estándar.
+
+Swish Exhibe propiedades únicas: no monotonía (puede decrecer para ciertos valores negativos pequeños), smoothness (es infinitamente diferenciable), y produce mejores resultados que ReLU en redes profundas en numerosos experimentos.
+
+### Mish
+
+Mish, propuesta por Misra en 2019, sigue una forma similar a Swish:
+
+$$\text{Mish}(x) = x \cdot \tanh(\ln(1 + e^x))$$
+
+Utiliza la función softplus en lugar de sigmoid, proporcionando una curva más suave. Experimentos empíricos sugieren que Mish supera consistentemente a ReLU y se desempeña comparable o mejor que Swish en muchas tareas.
+
+## Implementacion Practica
+
+A continuacion se presenta una implementacion en PyTorch que permite experimentar con diferentes funciones de activacion:
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Definicion de funciones de activacion personalizadas
+class Swish(nn.Module):
+    """Swish: x * sigmoid(beta * x)"""
+    def __init__(self, beta=1.0):
+        super().__init__()
+        self.beta = beta
+    
+    def forward(self, x):
+        return x * torch.sigmoid(self.beta * x)
+
+
+class GELU(nn.Module):
+    """Gaussian Error Linear Unit"""
+    def forward(self, x):
+        # Aproximacion usada en Hugging Face transformers
+        return 0.5 * x * (1 + torch.tanh(
+            torch.sqrt(torch.tensor(2.0 / np.pi)) * 
+            (x + 0.044715 * torch.pow(x, 3))
+        ))
+
+
+class Mish(nn.Module):
+    """Mish: x * tanh(softplus(x))"""
+    def forward(self, x):
+        return x * torch.tanh(F.softplus(x))
+
+
+# Comparacion visual de funciones de activacion
+def plot_activation_functions():
+    """Grafica las funciones de activacion y sus derivadas"""
+    x = torch.linspace(-5, 5, 500)
+    
+    activations = {
+        'ReLU': F.relu,
+        'Leaky ReLU(0.01)': lambda t: F.leaky_relu(t, 0.01),
+        'ELU(1.0)': lambda t: F.elu(t, 1.0),
+        'GELU': GELU(),
+        'Swish': Swish(),
+        'Mish': Mish(),
+    }
+    
+    fig, axes = plt.subplots(2, 3, figsize=(14, 8))
+    axes = axes.flatten()
+    
+    for idx, (name, func) in enumerate(activations.items()):
+        y = func(x)
+        
+        # Calcular derivadas numericamente
+        eps = 1e-7
+        y_plus = func(x + eps)
+        y_minus = func(x - eps)
+        dy = (y_plus - y_minus) / (2 * eps)
+        
+        ax = axes[idx]
+        ax.plot(x.numpy(), y.numpy(), 'b-', linewidth=2, label='Activación')
+        ax.plot(x.numpy(), dy.numpy(), 'r--', linewidth=1.5, label='Derivada')
+        ax.axhline(y=0, color='k', linestyle='-', linewidth=0.5)
+        ax.axvline(x=0, color='k', linestyle='-', linewidth=0.5)
+        ax.set_title(name, fontsize=12, fontweight='bold')
+        ax.set_xlabel('x')
+        ax.legend(loc='upper left')
+        ax.grid(True, alpha=0.3)
+        ax.set_ylim(-1.5, 5)
+    
+    plt.tight_layout()
+    plt.savefig('activation_functions.png', dpi=150)
+    plt.show()
+
+
+# Ejemplo de uso en una red neuronal
+class Red NeuronalEjemplo(nn.Module):
+    """Red feedforward con seleccion de activacion configurable"""
+    
+    def __init__(self, input_dim, hidden_dims, output_dim, activation='relu'):
+        super().__init__()
+        
+        # Seleccionar funcion de activacion
+        if activation == 'relu':
+            self.act = nn.ReLU()
+        elif activation == 'leaky_relu':
+            self.act = nn.LeakyReLU(0.01)
+        elif activation == 'elu':
+            self.act = nn.ELU()
+        elif activation == 'gelu':
+            self.act = nn.GELU()
+        elif activation == 'selu':
+            self.act = nn.SELU()
+        elif activation == 'swish':
+            self.act = Swish()
+        elif activation == 'mish':
+            self.act = Mish()
+        else:
+            raise ValueError(f"Activacion desconocida: {activation}")
+        
+        # Construir capas
+        capas = []
+        prev_dim = input_dim
+        for h_dim in hidden_dims:
+            capas.extend([
+                nn.Linear(prev_dim, h_dim),
+                self.act
+            ])
+            prev_dim = h_dim
+        capas.append(nn.Linear(prev_dim, output_dim))
+        
+        self.network = nn.Sequential(*capas)
+    
+    def forward(self, x):
+        return self.network(x)
+
+
+# Demonstracion de entrenamiento comparativo
+def entrenamiento_comparativo():
+    """Compara diferentes funciones de activacion en un problema simple"""
+    # Generar datos sinteticos: XOR
+    torch.manual_seed(42)
+    X = torch.tensor([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=torch.float32)
+    y = torch.tensor([[0], [1], [1], [0]], dtype=torch.float32)
+    
+    activaciones = ['relu', 'leaky_relu', 'gelu', 'elu', 'mish']
+    resultados = {}
+    
+    print("Comparando funciones de activacion en problema XOR")
+    print("=" * 60)
+    
+    for act_name in activaciones:
+        # Crear modelo
+        modelo = RedNeuronalEjemplo(
+            input_dim=2,
+            hidden_dims=[16, 16],
+            output_dim=1,
+            activation=act_name
+        )
+        
+        optimizador = torch.optim.Adam(modelo.parameters(), lr=0.01)
+        criterio = nn.MSELoss()
+        
+        # Entrenamiento
+        perdidas = []
+        for epoca in range(500):
+            optimizador.zero_grad()
+            salida = modelo(X)
+            loss = criterio(salida, y)
+            loss.backward()
+            optimizador.step()
+            perdidas.append(loss.item())
+        
+        # Evaluar
+        with torch.no_grad():
+            predicciones = (modelo(X) > 0.5).float()
+            precision = (predicciones == y).float().mean()
+        
+        resultados[act_name] = {
+            'loss_final': perdidas[-1],
+            'precision': precision.item(),
+            'curva_perdida': perdidas
+        }
+        
+        print(f"{act_name:15} - Loss final: {perdidas[-1]:.4f}, Precision: {precision.item()*100:.1f}%")
+    
+    return resultados
+```
+
+## Seleccion de la Funcion de Activacion
+
+### Guia Practica
+
+La eleccion de la funcion de activacion depende del contexto especifico de la tarea y la arquitectura:
+
+**Recomendaciones generales:**
+
+| Contexto | Activacion Recomendada |
+|----------|------------------------|
+| Redes convolucionales (CV) | ReLU, Leaky ReLU |
+| Redes recurrentes | tanh, LSTM/GRU gates |
+| Redes transformer | GELU |
+| Redes muy profundas | SELU (connormalization apropiada) |
+| Clasificacion binaria (salida) | Sigmoid |
+| Clasificacion multiclase (salida) | Softmax |
+| Valoracion general | GELU, Mish, o Swish |
+
+### Consideraciones de Implementacion
+
+**Computo:** ReLU es la mas eficiente; GELU, Swish y Mish incluyen operaciones trigonometricas mas costosas.
+
+**Compatibilidad con normalizacion:** Las funciones que mantienen la media cero (SELU, ELU, GELU) funcionan mejor con Batch Normalization o cuando se combina con dropout.
+
+**Regulacion implicita:** Funciones como GELU y Swish pueden actuar como regularizadores debil, reduciendo la necesidad de otras tecnicas de regularizacion en algunos casos.
+
+## Conclusion
+
+Las funciones de activacion constituyen el mecanismo fundamental que permite a las redes neuronales trascender las limitaciones de los modelos lineales. Desde la funcion escalon original hasta las funciones modernas como GELU y Swish, la evolucion de las activaciones refleja la busqueda continua de metodos que permitan entrenar redes mas profundas, mas estables y mas precisas.
+
+La no-linealidad introducida por estas funciones habilita la composicion jerarquica de representaciones que subyace al exito del deep learning moderno. Comprender las propiedades matematicas de cada funcion, sus fortalezas y limitaciones, resulta esencial para disenar arquitecturas efectivas y diagnosticar problemas durante el entrenamiento.
+
+En secciones posteriores, exploraremos como las funciones de activacion interactuan con otras tecnicas fundamentales como la normalizacion de capas, la inicializacion de pesos, y las arquitecturas especializadas que han emergido para diferentes dominios de aplicacion.
+
