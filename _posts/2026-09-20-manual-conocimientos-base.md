@@ -7,7 +7,7 @@ tags: [machine-learning, redes-neuronales, ia, neurociencia]
 reading_time: 120
 excerpt: "manual conocimiento base neurociencia"
 ---
-# Manual de conocimientos base — Proyecto Conectoma
+# Manual de conocimientos base — Neurociencia
 
 ## Fase 0: Fundamentos (conocimientos base para la investigación)
 
