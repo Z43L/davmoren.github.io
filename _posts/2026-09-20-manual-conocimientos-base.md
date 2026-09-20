@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Manual de conocimientos base — Proyecto Conectoma"
-date: 2025-10-27 10:00:00 -0000
+date: 2026-09-20 23:45:00 -0000
 author: David Moreno Jimenez
 tags: [machine-learning, redes-neuronales, ia, neurociencia]
 reading_time: 120
